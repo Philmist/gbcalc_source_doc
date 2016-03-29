@@ -1,4 +1,5 @@
-baseurl = "http://Philmist.github.io/gbcalc_source_doc"
+baseurl = "http://philmist.github.io/gbcalc_source_doc"
+canonifyurls = true
 languageCode = "ja-jp"
 title = "グラブル計算機の読み方"
 
