@@ -5,7 +5,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="グラブル計算機の読み方">
+		<link rel="alternate" href="http://philmist.github.io/gbcalc_source_doc/index.xml" type="application/rss+xml" title="グラブル計算機の読み方">
 		<link rel="icon" href="http://philmist.github.io/gbcalc_source_doc/favicon.ico">
 		<title>ビルドの仕方 - グラブル計算機の読み方</title>
 		
@@ -178,7 +178,7 @@ Chromeのようなブラウザだと
 <pre><code>&gt; webpack
 </code></pre>
 
-<p><img src="/img/webpack_built.png" alt="webpackの実行結果" /></p>
+<p><img src="http://philmist.github.io/gbcalc_source_doc/img/webpack_built.png" alt="webpackの実行結果" /></p>
 
 <p>これであとは<code>calc.html</code>と<code>test.html</code>を開けば目的のものが表示される…</p>
 
@@ -192,7 +192,7 @@ Chromeを含む一部のブラウザはローカルからのファイル読み�
 そのため、今回のような <em>ローカルからFetchAPIを使って読みこみする</em> 場合には
 Chromeでは正常に表示することができません。</p>
 
-<p><img src="/img/chrome_local_failed.png" alt="chromeでローカルファイルを表示した結果" /></p>
+<p><img src="http://philmist.github.io/gbcalc_source_doc/img/chrome_local_failed.png" alt="chromeでローカルファイルを表示した結果" /></p>
 
 <p>そこで使うのが <strong>webpack-dev-server</strong> です。
 このツールは先にも説明した通りローカルに小さな開発用Webサーバーを立ちあげるのですが、
@@ -212,11 +212,11 @@ Chromeでは正常に表示することができません。</p>
 次のように色々表示された最後に<code>webpack: bundle is now VALID</code>と表示されたら、
 <code>http://localhost:8080/calc.html</code>を開いてみてください。</p>
 
-<p><img src="/img/webpack_dev_server_valid.png" alt="開発用サーバーのコマンドプロンプト" /></p>
+<p><img src="http://philmist.github.io/gbcalc_source_doc/img/webpack_dev_server_valid.png" alt="開発用サーバーのコマンドプロンプト" /></p>
 
 <h2 id="profit:7c6c273796fe645f68a161a205352fe1">PROFIT!</h2>
 
-<p><img src="/img/webpack_display_result.png" alt="Chromiumでの表示" /></p>
+<p><img src="http://philmist.github.io/gbcalc_source_doc/img/webpack_display_result.png" alt="Chromiumでの表示" /></p>
 
 <p>このようにChromeで表示できました。
 無事ここまで出来たのなら、おめでとうございます!</p>

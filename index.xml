@@ -2,12 +2,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>グラブル計算機の読み方</title>
-    <link>http://Philmist.github.io/gbcalc_source_doc/</link>
+    <link>http://philmist.github.io/gbcalc_source_doc/</link>
     <description>Recent content on グラブル計算機の読み方</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
     <lastBuildDate>Tue, 29 Mar 2016 17:14:17 +0900</lastBuildDate>
-    <atom:link href="http://Philmist.github.io/gbcalc_source_doc/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://philmist.github.io/gbcalc_source_doc/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>ビルドの仕方</title>
@@ -126,7 +126,7 @@ Chromeのようなブラウザだと
 &lt;pre&gt;&lt;code&gt;&amp;gt; webpack
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://Philmist.github.io/gbcalc_source_doc/img/webpack_built.png&#34; alt=&#34;webpackの実行結果&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://philmist.github.io/gbcalc_source_doc/img/webpack_built.png&#34; alt=&#34;webpackの実行結果&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;これであとは&lt;code&gt;calc.html&lt;/code&gt;と&lt;code&gt;test.html&lt;/code&gt;を開けば目的のものが表示される…&lt;/p&gt;
 
@@ -140,7 +140,7 @@ Chromeを含む一部のブラウザはローカルからのファイル読み�
 そのため、今回のような &lt;em&gt;ローカルからFetchAPIを使って読みこみする&lt;/em&gt; 場合には
 Chromeでは正常に表示することができません。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://Philmist.github.io/gbcalc_source_doc/img/chrome_local_failed.png&#34; alt=&#34;chromeでローカルファイルを表示した結果&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://philmist.github.io/gbcalc_source_doc/img/chrome_local_failed.png&#34; alt=&#34;chromeでローカルファイルを表示した結果&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;そこで使うのが &lt;strong&gt;webpack-dev-server&lt;/strong&gt; です。
 このツールは先にも説明した通りローカルに小さな開発用Webサーバーを立ちあげるのですが、
@@ -160,11 +160,11 @@ Chromeでは正常に表示することができません。&lt;/p&gt;
 次のように色々表示された最後に&lt;code&gt;webpack: bundle is now VALID&lt;/code&gt;と表示されたら、
 &lt;code&gt;http://localhost:8080/calc.html&lt;/code&gt;を開いてみてください。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://Philmist.github.io/gbcalc_source_doc/img/webpack_dev_server_valid.png&#34; alt=&#34;開発用サーバーのコマンドプロンプト&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://philmist.github.io/gbcalc_source_doc/img/webpack_dev_server_valid.png&#34; alt=&#34;開発用サーバーのコマンドプロンプト&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;profit:7c6c273796fe645f68a161a205352fe1&#34;&gt;PROFIT!&lt;/h2&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://Philmist.github.io/gbcalc_source_doc/img/webpack_display_result.png&#34; alt=&#34;Chromiumでの表示&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://philmist.github.io/gbcalc_source_doc/img/webpack_display_result.png&#34; alt=&#34;Chromiumでの表示&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;このようにChromeで表示できました。
 無事ここまで出来たのなら、おめでとうございます!&lt;/p&gt;
