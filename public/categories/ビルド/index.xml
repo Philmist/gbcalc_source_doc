@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ビルド on グラブル計算機の読み方</title>
+    <link>http://Philmist.github.io/gbcalc_source_doc/categories/%E3%83%93%E3%83%AB%E3%83%89/</link>
+    <description>Recent content in ビルド on グラブル計算機の読み方</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Tue, 29 Mar 2016 17:14:17 +0900</lastBuildDate>
+    <atom:link href="http://Philmist.github.io/gbcalc_source_doc/categories/%E3%83%93%E3%83%AB%E3%83%89/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>ビルドの仕方</title>
+      <link>http://philmist.github.io/gbcalc_source_doc/howtobuild/</link>
+      <pubDate>Tue, 29 Mar 2016 17:14:17 +0900</pubDate>
+      
+      <guid>http://philmist.github.io/gbcalc_source_doc/howtobuild/</guid>
+      <description>
+
+&lt;p&gt;ここではソースから実際に見るhtmlへと変換する(ビルドする)ための手順を
+解説します。&lt;/p&gt;
+
+&lt;h1 id=&#34;ビルドとは:7c6c273796fe645f68a161a205352fe1&#34;&gt;ビルドとは&lt;/h1&gt;
+
+&lt;p&gt;最近のJavascript、つまりは &lt;em&gt;ECMAScript&lt;/em&gt; のことですが、
+以下のような手順を踏んで最終的に見るべきコンテンツが生成されるようです。
+この手順をビルドと私はとりあえず呼んでいます。&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;ライブラリをたくさんローカルにインストールする&lt;/li&gt;
+&lt;li&gt;複数のスクリプトを書く&lt;/li&gt;
+&lt;li&gt;スクリプトからスクリプトを呼びだしたりする&lt;/li&gt;
+&lt;li&gt;htmlファイルから呼びだすスクリプトを1つにまとめる&lt;/li&gt;
+&lt;li&gt;htmlファイルを書く&lt;/li&gt;
+&lt;li&gt;???&lt;/li&gt;
+&lt;li&gt;PROFIT&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;複数のスクリプトを1つにまとめるためのソフトを &lt;strong&gt;bundler&lt;/strong&gt; と
+呼んでいるようです。
+bundlerがあるとスクリプトからスクリプトを呼びだすことが非常に簡単になります。&lt;/p&gt;
+
+&lt;p&gt;以下の説明は全てWindowsが前提です。&lt;/p&gt;
+
+&lt;h1 id=&#34;ビルドのやり方:7c6c273796fe645f68a161a205352fe1&#34;&gt;ビルドのやり方&lt;/h1&gt;
+
+&lt;p&gt;同梱した&lt;code&gt;readme.md&lt;/code&gt;にも書いてありますが
+もう少し詳細に解説します。&lt;/p&gt;
+
+&lt;h2 id=&#34;全ての前提-node-jsとnpm:7c6c273796fe645f68a161a205352fe1&#34;&gt;全ての前提: node.jsとnpm&lt;/h2&gt;
+
+&lt;p&gt;ライブラリをインストールしたりツールを動かしたりするために必要となるソフトがあります。
+それが &lt;strong&gt;&lt;a href=&#34;https://nodejs.org/en/&#34;&gt;node.js&lt;/a&gt;&lt;/strong&gt; です。&lt;/p&gt;
+
+&lt;p&gt;node.jsはJavascriptをコマンドラインで動かすための&lt;code&gt;node&lt;/code&gt;コマンドと、
+Javascriptのライブラリをインストールするための&lt;code&gt;npm&lt;/code&gt;コマンドが含まれています。&lt;/p&gt;
+
+&lt;p&gt;今回は&lt;code&gt;node&lt;/code&gt;コマンドを直接には使いませんが、
+&lt;code&gt;npm&lt;/code&gt;だけは各種ライブラリをインストールするのに使います。&lt;/p&gt;
+
+&lt;p&gt;ダウンロードページは英語ですが気合でインストールしてください。&lt;/p&gt;
+
+&lt;p&gt;気合が入ると(インストールされると)、&lt;code&gt;node&lt;/code&gt;コマンドと&lt;code&gt;npm&lt;/code&gt;コマンドが使えるようになります。
+以下のようにしてインストールされたことを確認できます。
+先頭の&lt;code&gt;&amp;gt;&lt;/code&gt;はコマンドプロンプトそれ自体の表示だと思ってください。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; node --version
+&amp;gt; npm --version
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;他にコマンドラインで使うものをインストールする:7c6c273796fe645f68a161a205352fe1&#34;&gt;他にコマンドラインで使うものをインストールする&lt;/h2&gt;
+
+&lt;p&gt;他にコマンドラインから直接使いたいツールの1つは、
+先に説明したbundlerの1つである &lt;strong&gt;Webpack&lt;/strong&gt; です。
+他にもbundlerはあるのですが(browserify)、
+Webpackの方が現在は人気があるようなのでこちらを使います。&lt;/p&gt;
+
+&lt;p&gt;Webpackは現在ベータの &lt;strong&gt;Webpack2&lt;/strong&gt; 系を使います。
+管理者権限があるコマンドプロンプト上で次のコマンドを入力してください。
+こうすることで&lt;code&gt;webpack&lt;/code&gt;コマンドが全体で使えるようになります。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; npm install -g webpack@^2.1.0-beta
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;他にインストールしておきたいツールはWebpackの関連ツールである
+&lt;strong&gt;webpack-dev-server&lt;/strong&gt; です。
+同梱のソースはFirefoxだとそのまま動くのですが、
+Chromeのようなブラウザだと
+(FetchAPIがローカルからの読みこみをデフォルトでは許可してくれないので)
+若干動かすのが面倒になります。&lt;/p&gt;
+
+&lt;p&gt;そこで役に立つのがwebpack-dev-serverです。
+このツールは &lt;em&gt;ローカルで簡単なHTTPサーバーを動かす&lt;/em&gt; ツールです。
+これがあることでChromeのようなブラウザも
+サーバーからの読みこみとして解釈してくれるようになります。&lt;/p&gt;
+
+&lt;p&gt;インストール方法は以下の通りです。
+やっぱり管理者権限のあるコマンドプロンプトで入力してください。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; npm install -g webpack-dev-server@^2.0.0-beta
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;ライブラリをプロジェクトディレクトリにインストールする:7c6c273796fe645f68a161a205352fe1&#34;&gt;ライブラリをプロジェクトディレクトリにインストールする&lt;/h2&gt;
+
+&lt;p&gt;さて、ソースはどこかに展開されているでしょうか。
+そのソースのディレクトリに移動して(&lt;code&gt;cd&lt;/code&gt;して)、
+コマンドプロンプトで次のコマンドを入力しましょう。
+今度は &lt;em&gt;管理者権限ではない&lt;/em&gt; 通常のコマンドプロンプトで入力してください。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; npm install
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;このコマンドはディレクトリにある&lt;code&gt;package.json&lt;/code&gt;ファイルを参照して、
+&lt;code&gt;node_modules&lt;/code&gt;ディレクトリに必要なライブラリ一式をインストールするための
+コマンドです。
+ライブラリ自体の数はそこそこなのですが、
+依存するライブラリがかなり多いのでお茶でも飲みながらお待ちください。&lt;/p&gt;
+
+&lt;h2 id=&#34;ビルドする:7c6c273796fe645f68a161a205352fe1&#34;&gt;ビルドする&lt;/h2&gt;
+
+&lt;p&gt;ライブラリのインストールは終わったでしょうか。最後はビルドです。&lt;/p&gt;
+
+&lt;p&gt;次のコマンドを通常のコマンドプロンプトで入力すればビルドが始まります。
+だいたい40秒くらいかかるのでのんびりお待ちください。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; webpack
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://Philmist.github.io/gbcalc_source_doc/img/webpack_built.png&#34; alt=&#34;webpackの実行結果&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;これであとは&lt;code&gt;calc.html&lt;/code&gt;と&lt;code&gt;test.html&lt;/code&gt;を開けば目的のものが表示される…&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_6:7c6c273796fe645f68a161a205352fe1&#34;&gt;???&lt;/h2&gt;
+
+&lt;p&gt;はずでした。&lt;/p&gt;
+
+&lt;p&gt;先にも書きましたが、
+Chromeを含む一部のブラウザはローカルからのファイル読みこみを
+デフォルトでは許可していません。
+そのため、今回のような &lt;em&gt;ローカルからFetchAPIを使って読みこみする&lt;/em&gt; 場合には
+Chromeでは正常に表示することができません。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://Philmist.github.io/gbcalc_source_doc/img/chrome_local_failed.png&#34; alt=&#34;chromeでローカルファイルを表示した結果&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;そこで使うのが &lt;strong&gt;webpack-dev-server&lt;/strong&gt; です。
+このツールは先にも説明した通りローカルに小さな開発用Webサーバーを立ちあげるのですが、
+他にも素晴らしいことに &lt;strong&gt;ホットリロード&lt;/strong&gt; に対応しているのです。&lt;/p&gt;
+
+&lt;p&gt;ホットリロードとは何か。
+ビルドには直接関係ないのですが、今回の例で言うとそれは
+&lt;strong&gt;ファイルを変更して保存すると自動的にビルドして画面をリロードする仕組み&lt;/strong&gt;
+です。&lt;/p&gt;
+
+&lt;p&gt;では実際に実行してみましょう。プロジェクトのルートディレクトリで以下のコマンドを実行してください。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; webpack-dev-server
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;このコマンドはデフォルトだと&lt;code&gt;localhost:8080&lt;/code&gt;にサーバーを立ちあげます。
+次のように色々表示された最後に&lt;code&gt;webpack: bundle is now VALID&lt;/code&gt;と表示されたら、
+&lt;code&gt;http://localhost:8080/calc.html&lt;/code&gt;を開いてみてください。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://Philmist.github.io/gbcalc_source_doc/img/webpack_dev_server_valid.png&#34; alt=&#34;開発用サーバーのコマンドプロンプト&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;profit:7c6c273796fe645f68a161a205352fe1&#34;&gt;PROFIT!&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://Philmist.github.io/gbcalc_source_doc/img/webpack_display_result.png&#34; alt=&#34;Chromiumでの表示&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;このようにChromeで表示できました。
+無事ここまで出来たのなら、おめでとうございます!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
