@@ -6,8 +6,130 @@
     <description>Recent content in ビルド on グラブル計算機の読み方</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Tue, 29 Mar 2016 17:14:17 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 30 Mar 2016 11:48:45 +0900</lastBuildDate>
     <atom:link href="http://philmist.github.io/gbcalc_source_doc/categories/%E3%83%93%E3%83%AB%E3%83%89/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>ビルドで何をしているか</title>
+      <link>http://philmist.github.io/gbcalc_source_doc/build_detail/</link>
+      <pubDate>Wed, 30 Mar 2016 11:48:45 +0900</pubDate>
+      
+      <guid>http://philmist.github.io/gbcalc_source_doc/build_detail/</guid>
+      <description>
+
+&lt;p&gt;この文書では &lt;em&gt;ビルド&lt;/em&gt; で実際はいったい何をしているのかを解説します。&lt;/p&gt;
+
+&lt;h1 id=&#34;コードの分割-commonjsのやり方とes6のやり方:c148923e9003c2cad40a9cc8672acac8&#34;&gt;コードの分割、CommonJSのやり方とES6のやり方&lt;/h1&gt;
+
+&lt;p&gt;コンパイル型の言語、たとえばC++ではコードを分割して書いたのち、
+最終的に &lt;em&gt;コンパイル&lt;/em&gt; と &lt;em&gt;リンク&lt;/em&gt; をしてひとつの生成物にしています。&lt;/p&gt;
+
+&lt;p&gt;Javascriptでも同じことが行なえます。
+そのうちのリンク、つまり複数のものをひとつにまとめるツールを &lt;em&gt;bundler&lt;/em&gt; と呼んでいます。
+bundlerで有名なツールには&lt;code&gt;browserify&lt;/code&gt;と&lt;code&gt;webpack&lt;/code&gt;の2つがあって
+どちらも人気があるようですが、
+私は&lt;code&gt;webpack&lt;/code&gt;の方を選びました。&lt;/p&gt;
+
+&lt;p&gt;ところで&lt;code&gt;webpack&lt;/code&gt;を使って、
+あるコードから別のファイルにあるコードを読みこむときにはいくつかの方法があります。
+そのうち2つを今回のコードでは使っています。&lt;/p&gt;
+
+&lt;p&gt;1つは&lt;code&gt;CommonJS&lt;/code&gt;のやり方です。これは&lt;code&gt;module.exports&lt;/code&gt;と&lt;code&gt;require&lt;/code&gt;を使います。
+&lt;code&gt;module.exports&lt;/code&gt;に外へ出したいもの(変数とかオブジェクトとか)を代入すると、
+&lt;code&gt;require&lt;/code&gt;を使って出されたものを参照できます。
+例を示します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// hello.js
+var Hello = &amp;quot;Hello!&amp;quot;;
+module.exports = Hello;
+
+// world.js
+var Hello = require(&amp;quot;./hello&amp;quot;);
+console.log(Hello + &amp;quot;World!&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;もう1つは&lt;code&gt;ES6&lt;/code&gt;(&lt;code&gt;ES2015&lt;/code&gt;)のやり方です。
+&lt;code&gt;ES6&lt;/code&gt;という名称は&lt;code&gt;ECMAScript&lt;/code&gt;の第6版ということから来ています。
+これは&lt;code&gt;import&lt;/code&gt;と&lt;code&gt;export&lt;/code&gt;を使います。&lt;/p&gt;
+
+&lt;p&gt;まず、単純な例から。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// hello.js
+export var Hello = &amp;quot;Hello!&amp;quot;;
+
+// world.js
+import { Hello } from &amp;quot;./hello&amp;quot;;
+console.log(Hello + &amp;quot;World!&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ちょっと難しい例。
+&lt;a href=&#34;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/import&#34;&gt;MDNのimport&lt;/a&gt;
+を見ながらどうぞ。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// hello.js
+export var Hello = &amp;quot;Hello!&amp;quot;;
+
+// world.js
+export default function print_world(s) {
+  console.log(s + &amp;quot;World!&amp;quot;);
+}
+
+// print.js
+import * as H from &amp;quot;./hello&amp;quot;;
+import world from &amp;quot;./world&amp;quot;;
+
+world(H.Hello);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;jsx-es6-7-そしてbabel:c148923e9003c2cad40a9cc8672acac8&#34;&gt;JSX、ES6/7、そしてBabel&lt;/h1&gt;
+
+&lt;p&gt;リンクに相当する&lt;code&gt;bundler&lt;/code&gt;については説明しました。
+今度はコンパイルについて説明します。&lt;/p&gt;
+
+&lt;p&gt;今回使用しているreactというライブラリでは&lt;code&gt;JSX&lt;/code&gt;という文法が推奨されています。
+これは次のようにXMLっぽい構文をJavascriptに紛れこませられるものです。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class PlayerStats extends Component {
+  render() {
+    return (
+      &amp;lt;table className=&amp;quot;grbr&amp;quot; id=&amp;quot;info_table&amp;quot;&amp;gt;
+        &amp;lt;tbody&amp;gt;
+          &amp;lt;Rank /&amp;gt;
+          &amp;lt;ShipBonus /&amp;gt;
+          &amp;lt;AttributeBonus /&amp;gt;
+          &amp;lt;HPPercent /&amp;gt;
+        &amp;lt;/tbody&amp;gt;
+      &amp;lt;/table&amp;gt;
+    );
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;もちろん、こんな構文をブラウザが理解できるわけがありません。
+そこで必要なのが &lt;em&gt;コンパイラ&lt;/em&gt; です。
+コンパイラはこのような構文をブラウザが解釈できる構文に変換します。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Babel&lt;/code&gt;というコンパイラは、
+まだブラウザで実装されていないけれど最新の仕様では実装されている(&lt;code&gt;ES6&lt;/code&gt;とか&lt;code&gt;ES7&lt;/code&gt;)、
+というような構文を対象のブラウザが解釈できる構文に変換することも出来ます。
+&lt;code&gt;Babel&lt;/code&gt;は&lt;code&gt;webpack&lt;/code&gt;から呼びだして実行することが可能なので、私はそうしています。&lt;/p&gt;
+
+&lt;h1 id=&#34;結局webpackは何をしているか:c148923e9003c2cad40a9cc8672acac8&#34;&gt;結局webpackは何をしているか&lt;/h1&gt;
+
+&lt;p&gt;&lt;code&gt;webpack&lt;/code&gt;それ自体はリンクとコンパイルをしています。つまり次のようなことをしています。&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;エントリポイントとして指定されたJavascriptファイルを探す&lt;/li&gt;
+&lt;li&gt;指定されたファイルから呼びだされているファイルを順々に探す&lt;/li&gt;
+&lt;li&gt;Javascriptファイルを&lt;code&gt;Babel&lt;/code&gt;(正確には&lt;code&gt;babel-loader&lt;/code&gt;)に渡してコンパイルする&lt;/li&gt;
+&lt;li&gt;全てのファイルを1つにまとめる&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;こうすることで、好きな構文を使って色々なブラウザで動くJavascriptを簡単に書けるわけです。&lt;/p&gt;
+
+&lt;p&gt;なお、&lt;code&gt;webpack&lt;/code&gt;の設定ファイルは&lt;code&gt;webpack.config.js&lt;/code&gt;になります。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>ビルドの仕方</title>
