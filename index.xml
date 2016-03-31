@@ -132,6 +132,169 @@ world(H.Hello);
     </item>
     
     <item>
+      <title>ファイル構成</title>
+      <link>http://philmist.github.io/gbcalc_source_doc/file_constructure/</link>
+      <pubDate>Tue, 29 Mar 2016 19:45:25 +0900</pubDate>
+      
+      <guid>http://philmist.github.io/gbcalc_source_doc/file_constructure/</guid>
+      <description>
+
+&lt;p&gt;この文書では含まれているディレクトリやファイルがどういった意味合いなのかを解説します。&lt;/p&gt;
+
+&lt;h1 id=&#34;ウェブサイトにアップロードする際に必要なファイルとディレクトリ:2fdc350de12ba0070e8c2120c91db670&#34;&gt;ウェブサイトにアップロードする際に必要なファイルとディレクトリ&lt;/h1&gt;
+
+&lt;p&gt;先にアップロードして閲覧するのに必要なファイルとディレクトリだけを書いておきます。
+プロジェクトルートに対するディレクトリの構造は維持してください。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;data/*&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;css/*&lt;/code&gt; &lt;em&gt;実はあんまり必須ではない&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;dist/bundle.js&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;calc.html&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;設定ファイル:2fdc350de12ba0070e8c2120c91db670&#34;&gt;設定ファイル&lt;/h1&gt;
+
+&lt;p&gt;コードを書くのに使ったりする設定ファイルは以下のものです。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;.gitignore&lt;/code&gt; (バージョン管理でどのファイルを無視するか設定する)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;package.json&lt;/code&gt; (&lt;code&gt;npm&lt;/code&gt;でどんなパッケージをインストールするか設定する)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;webpack.config.js&lt;/code&gt; (&lt;code&gt;webpack&lt;/code&gt;に何をさせるかを設定する)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;自動的に生成されるファイルとディレクトリ:2fdc350de12ba0070e8c2120c91db670&#34;&gt;自動的に生成されるファイルとディレクトリ&lt;/h1&gt;
+
+&lt;p&gt;このアプリ(プロジェクト)は全体を通して &lt;em&gt;webpack&lt;/em&gt; と &lt;em&gt;npm&lt;/em&gt; に強く依存しています。
+その結果、いくつかのディレクトリとファイルが自動的に生成されて参照されます。&lt;/p&gt;
+
+&lt;h2 id=&#34;node-modules:2fdc350de12ba0070e8c2120c91db670&#34;&gt;node_modules&lt;/h2&gt;
+
+&lt;p&gt;このディレクトリはnpmがモジュール(ライブラリ)をインストールする際に使用するディレクトリです。&lt;/p&gt;
+
+&lt;p&gt;webpackもこのディレクトリからモジュールを参照するので、
+開発中は不必要にディレクトリを消すのは避けてください。&lt;/p&gt;
+
+&lt;p&gt;ただし、実際にウェブサイトとしてアップロードする際にはこのディレクトリは不要です。
+ライブラリは後述するdistディレクトリに生成されるファイルに全て含まれます。&lt;/p&gt;
+
+&lt;h2 id=&#34;dist:2fdc350de12ba0070e8c2120c91db670&#34;&gt;dist&lt;/h2&gt;
+
+&lt;p&gt;このディレクトリにwebpackは次のファイルを生成します。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;bundle.js&lt;/li&gt;
+&lt;li&gt;test_bundle.js&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;bundle.js&lt;/code&gt;の方は&lt;code&gt;calc.html&lt;/code&gt;で使われるJavascriptの本体です。
+このファイルには使用しているライブラリが &lt;strong&gt;全て&lt;/strong&gt; 含まれているので、
+かなり大きいサイズになっているはずです。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;test_bundle.js&lt;/code&gt;の方は&lt;code&gt;test.html&lt;/code&gt;で使われるJavascriptファイルです。
+このファイルも使用しているライブラリがいくつか含まれますが、
+依存関係が(今のところ)小さいのでそこまで大きくないはずです。&lt;/p&gt;
+
+&lt;h1 id=&#34;外部データとかスタイルシート:2fdc350de12ba0070e8c2120c91db670&#34;&gt;外部データとかスタイルシート&lt;/h1&gt;
+
+&lt;p&gt;次の場所にはbundle.jsなどのJavascriptから呼びだされて使用される
+データやスタイルシートがあります。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;data/job_data.json&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;css/calc.css&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;data/job_data.json&lt;/code&gt;については
+&lt;code&gt;bundle.js&lt;/code&gt;や&lt;code&gt;test_bundle.js&lt;/code&gt;からFetch API経由で呼びだされるので、
+絶対にプロジェクトルートからの位置は維持してください。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;css/calc.css&lt;/code&gt;についてですが、
+実のところこちらは&lt;code&gt;bundle.js&lt;/code&gt;にビルド時に組みこまれており、
+&lt;code&gt;test.html&lt;/code&gt;もこれを必要としないので、アップロード時には無くてもあんまり問題はありません。&lt;/p&gt;
+
+&lt;h1 id=&#34;js-jsxファイル:2fdc350de12ba0070e8c2120c91db670&#34;&gt;JS/JSXファイル&lt;/h1&gt;
+
+&lt;p&gt;これらに全て説明をつけるにはプログラム全体の説明をしなければなりませんので、
+ここでは概要にとどめます。&lt;/p&gt;
+
+&lt;h2 id=&#34;entry-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;entry.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;エントリポイント(C/C++のmain関数相当)です。
+ここでreduxのstoreを設定し、htmlと繋ぎあわせます。&lt;/p&gt;
+
+&lt;h2 id=&#34;atk-calc-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;atk_calc.js&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;与えられたパラメータオブジェクトとジョブデータから
+最終的な攻撃力を計算するための関数が入っています。
+エラー処理はほとんどしていないのでそのあたりは呼びだし側に任されています。&lt;/p&gt;
+
+&lt;h2 id=&#34;get-job-data-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;get_job_data.js&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;指定されたURLからJSONデータを読みこみPromiseオブジェクトとして返す関数が入っています。
+デフォルトの読みこみURLはプロジェクトルート直下のdataディレクトリ内&lt;code&gt;job_data.json&lt;/code&gt;です。&lt;/p&gt;
+
+&lt;h2 id=&#34;manupulate-form-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;manupulate_form.js&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;今では使っていませんが、かつて計算機のフォーム部分をテンプレート文字列を使って
+操作するのに使っていました。消しても問題ありません。&lt;/p&gt;
+
+&lt;h2 id=&#34;reducers-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;reducers.js&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;ファイルの先頭にもざっくり説明がありますが、
+reduxというライブラリを使ってstoreという変数に状態(state)を保存する際に、
+どういうactionオブジェクトが渡されたらstoreにどう保存するかを書いたモジュールです。&lt;/p&gt;
+
+&lt;h2 id=&#34;actions-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;actions.js&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;reactのコンポーネントと&lt;code&gt;reducers.js&lt;/code&gt;のreducer関数を繋げるための関数群です。
+redux-thunkというライブラリを使っているので、
+通常のreduxとは若干違う書き方になっています。&lt;/p&gt;
+
+&lt;h2 id=&#34;calculator-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;calculator.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;計算機全体のデザインと、結果表示などの小さなコンポーネントを集めたモジュールです。
+&lt;code&gt;entry.jsx&lt;/code&gt;で直接使われているモジュールです。
+他のコンポーネントの多くがここから呼びだされて使われています。
+計算結果を作るためstateの整形をして関数に渡しているのもこのモジュールです。
+また、アプリ全体でドラッグ&amp;amp;ドロップを使うためにこのモジュールで準備をしています。&lt;/p&gt;
+
+&lt;h2 id=&#34;basic-information-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;basic_information.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;基本情報(ランクや攻撃力ボーナス等)を入力させるコンポーネントが入っているモジュールです。
+ジョブを選択するため、reduxのstoreを通してジョブ情報を読んでいます。&lt;/p&gt;
+
+&lt;h2 id=&#34;friend-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;friend.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;フレンド召喚を選ぶコンポーネントが入ったモジュールです。
+現在のところほとんど何も入っていません。&lt;/p&gt;
+
+&lt;h2 id=&#34;zenith-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;zenith.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;ゼニスパークを入力させるコンポーネントが入ったモジュールです。&lt;/p&gt;
+
+&lt;h2 id=&#34;weapon-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;weapon.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;武器構成を入力させるモジュールです。
+ドラッグ&amp;amp;ドロップと項目の追加削除などの表示部分も担当しています。
+実際にデータを動かしているのは&lt;code&gt;action.js&lt;/code&gt;と&lt;code&gt;reducers.js&lt;/code&gt;です。&lt;/p&gt;
+
+&lt;h2 id=&#34;summon-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;summon.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;召喚構成を入力させるモジュールです。
+こちらも&lt;code&gt;weapon.jsx&lt;/code&gt;と似たような処理をしています。&lt;/p&gt;
+
+&lt;h1 id=&#34;終わりに:2fdc350de12ba0070e8c2120c91db670&#34;&gt;終わりに&lt;/h1&gt;
+
+&lt;p&gt;コードの量自体は多く見えますが、データの流れはそこまで難しくはありません。&lt;/p&gt;
+
+&lt;p&gt;ほとんど全てのデータはreduxのstoreに保存され、
+データが更新されると関連したモジュールが更新される、と覚えておけば
+ひとまずは十分だと思います。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>ビルドの仕方</title>
       <link>http://philmist.github.io/gbcalc_source_doc/howtobuild/</link>
       <pubDate>Tue, 29 Mar 2016 17:14:17 +0900</pubDate>
