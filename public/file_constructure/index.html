@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="http://philmist.github.io/gbcalc_source_doc/index.xml" type="application/rss+xml" title="グラブル計算機の読み方">
+		<link rel="icon" href="http://philmist.github.io/gbcalc_source_doc/favicon.ico">
+		<title>ファイル構成 - グラブル計算機の読み方</title>
+		
+		<link rel="stylesheet" href="http://philmist.github.io/gbcalc_source_doc/css/highlight.js.min.css">
+		<link rel="stylesheet" href="http://philmist.github.io/gbcalc_source_doc/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://philmist.github.io/gbcalc_source_doc/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="http://philmist.github.io/gbcalc_source_doc/css/theme.css">
+		<link rel="stylesheet" href="http://philmist.github.io/gbcalc_source_doc/css/bootie-docs.css">
+	</head>
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="http://philmist.github.io/gbcalc_source_doc/">グラブル計算機の読み方</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="http://philmist.github.io/gbcalc_source_doc/">Home</a></li>
+			
+				
+				
+					
+					<li ><a href="http://philmist.github.io/gbcalc_source_doc/howtobuild">Howtobuild</a></li>
+				
+			
+				
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Categories<span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+						
+							<li><a href="http://philmist.github.io/gbcalc_source_doc/categories/%E3%82%BD%E3%83%BC%E3%82%B9%E8%A7%A3%E8%AA%AC">ソース解説</a></li>
+						
+							<li><a href="http://philmist.github.io/gbcalc_source_doc/categories/%E3%83%93%E3%83%AB%E3%83%89">ビルド</a></li>
+						
+						</ul>
+					</li>
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">ファイル構成</h1>
+				<div class="doc-entry-meta">
+					<span><time datetime="2016-03-29">March 29, 2016</time></span>
+				</div>
+				<section>
+					
+
+<p>この文書では含まれているディレクトリやファイルがどういった意味合いなのかを解説します。</p>
+
+<h1 id="ウェブサイトにアップロードする際に必要なファイルとディレクトリ:2fdc350de12ba0070e8c2120c91db670">ウェブサイトにアップロードする際に必要なファイルとディレクトリ</h1>
+
+<p>先にアップロードして閲覧するのに必要なファイルとディレクトリだけを書いておきます。
+プロジェクトルートに対するディレクトリの構造は維持してください。</p>
+
+<ul>
+<li><code>data/*</code></li>
+<li><code>css/*</code> <em>実はあんまり必須ではない</em></li>
+<li><code>dist/bundle.js</code></li>
+<li><code>calc.html</code></li>
+</ul>
+
+<h1 id="設定ファイル:2fdc350de12ba0070e8c2120c91db670">設定ファイル</h1>
+
+<p>コードを書くのに使ったりする設定ファイルは以下のものです。</p>
+
+<ul>
+<li><code>.gitignore</code> (バージョン管理でどのファイルを無視するか設定する)</li>
+<li><code>package.json</code> (<code>npm</code>でどんなパッケージをインストールするか設定する)</li>
+<li><code>webpack.config.js</code> (<code>webpack</code>に何をさせるかを設定する)</li>
+</ul>
+
+<h1 id="自動的に生成されるファイルとディレクトリ:2fdc350de12ba0070e8c2120c91db670">自動的に生成されるファイルとディレクトリ</h1>
+
+<p>このアプリ(プロジェクト)は全体を通して <em>webpack</em> と <em>npm</em> に強く依存しています。
+その結果、いくつかのディレクトリとファイルが自動的に生成されて参照されます。</p>
+
+<h2 id="node-modules:2fdc350de12ba0070e8c2120c91db670">node_modules</h2>
+
+<p>このディレクトリはnpmがモジュール(ライブラリ)をインストールする際に使用するディレクトリです。</p>
+
+<p>webpackもこのディレクトリからモジュールを参照するので、
+開発中は不必要にディレクトリを消すのは避けてください。</p>
+
+<p>ただし、実際にウェブサイトとしてアップロードする際にはこのディレクトリは不要です。
+ライブラリは後述するdistディレクトリに生成されるファイルに全て含まれます。</p>
+
+<h2 id="dist:2fdc350de12ba0070e8c2120c91db670">dist</h2>
+
+<p>このディレクトリにwebpackは次のファイルを生成します。</p>
+
+<ul>
+<li>bundle.js</li>
+<li>test_bundle.js</li>
+</ul>
+
+<p><code>bundle.js</code>の方は<code>calc.html</code>で使われるJavascriptの本体です。
+このファイルには使用しているライブラリが <strong>全て</strong> 含まれているので、
+かなり大きいサイズになっているはずです。</p>
+
+<p><code>test_bundle.js</code>の方は<code>test.html</code>で使われるJavascriptファイルです。
+このファイルも使用しているライブラリがいくつか含まれますが、
+依存関係が(今のところ)小さいのでそこまで大きくないはずです。</p>
+
+<h1 id="外部データとかスタイルシート:2fdc350de12ba0070e8c2120c91db670">外部データとかスタイルシート</h1>
+
+<p>次の場所にはbundle.jsなどのJavascriptから呼びだされて使用される
+データやスタイルシートがあります。</p>
+
+<ul>
+<li><code>data/job_data.json</code></li>
+<li><code>css/calc.css</code></li>
+</ul>
+
+<p><code>data/job_data.json</code>については
+<code>bundle.js</code>や<code>test_bundle.js</code>からFetch API経由で呼びだされるので、
+絶対にプロジェクトルートからの位置は維持してください。</p>
+
+<p><code>css/calc.css</code>についてですが、
+実のところこちらは<code>bundle.js</code>にビルド時に組みこまれており、
+<code>test.html</code>もこれを必要としないので、アップロード時には無くてもあんまり問題はありません。</p>
+
+<h1 id="js-jsxファイル:2fdc350de12ba0070e8c2120c91db670">JS/JSXファイル</h1>
+
+<p>これらに全て説明をつけるにはプログラム全体の説明をしなければなりませんので、
+ここでは概要にとどめます。</p>
+
+<h2 id="entry-jsx:2fdc350de12ba0070e8c2120c91db670"><code>entry.jsx</code></h2>
+
+<p>エントリポイント(C/C++のmain関数相当)です。
+ここでreduxのstoreを設定し、htmlと繋ぎあわせます。</p>
+
+<h2 id="atk-calc-js:2fdc350de12ba0070e8c2120c91db670"><code>atk_calc.js</code></h2>
+
+<p>与えられたパラメータオブジェクトとジョブデータから
+最終的な攻撃力を計算するための関数が入っています。
+エラー処理はほとんどしていないのでそのあたりは呼びだし側に任されています。</p>
+
+<h2 id="get-job-data-js:2fdc350de12ba0070e8c2120c91db670"><code>get_job_data.js</code></h2>
+
+<p>指定されたURLからJSONデータを読みこみPromiseオブジェクトとして返す関数が入っています。
+デフォルトの読みこみURLはプロジェクトルート直下のdataディレクトリ内<code>job_data.json</code>です。</p>
+
+<h2 id="manupulate-form-js:2fdc350de12ba0070e8c2120c91db670"><code>manupulate_form.js</code></h2>
+
+<p>今では使っていませんが、かつて計算機のフォーム部分をテンプレート文字列を使って
+操作するのに使っていました。消しても問題ありません。</p>
+
+<h2 id="reducers-js:2fdc350de12ba0070e8c2120c91db670"><code>reducers.js</code></h2>
+
+<p>ファイルの先頭にもざっくり説明がありますが、
+reduxというライブラリを使ってstoreという変数に状態(state)を保存する際に、
+どういうactionオブジェクトが渡されたらstoreにどう保存するかを書いたモジュールです。</p>
+
+<h2 id="actions-js:2fdc350de12ba0070e8c2120c91db670"><code>actions.js</code></h2>
+
+<p>reactのコンポーネントと<code>reducers.js</code>のreducer関数を繋げるための関数群です。
+redux-thunkというライブラリを使っているので、
+通常のreduxとは若干違う書き方になっています。</p>
+
+<h2 id="calculator-jsx:2fdc350de12ba0070e8c2120c91db670"><code>calculator.jsx</code></h2>
+
+<p>計算機全体のデザインと、結果表示などの小さなコンポーネントを集めたモジュールです。
+<code>entry.jsx</code>で直接使われているモジュールです。
+他のコンポーネントの多くがここから呼びだされて使われています。
+計算結果を作るためstateの整形をして関数に渡しているのもこのモジュールです。
+また、アプリ全体でドラッグ&amp;ドロップを使うためにこのモジュールで準備をしています。</p>
+
+<h2 id="basic-information-jsx:2fdc350de12ba0070e8c2120c91db670"><code>basic_information.jsx</code></h2>
+
+<p>基本情報(ランクや攻撃力ボーナス等)を入力させるコンポーネントが入っているモジュールです。
+ジョブを選択するため、reduxのstoreを通してジョブ情報を読んでいます。</p>
+
+<h2 id="friend-jsx:2fdc350de12ba0070e8c2120c91db670"><code>friend.jsx</code></h2>
+
+<p>フレンド召喚を選ぶコンポーネントが入ったモジュールです。
+現在のところほとんど何も入っていません。</p>
+
+<h2 id="zenith-jsx:2fdc350de12ba0070e8c2120c91db670"><code>zenith.jsx</code></h2>
+
+<p>ゼニスパークを入力させるコンポーネントが入ったモジュールです。</p>
+
+<h2 id="weapon-jsx:2fdc350de12ba0070e8c2120c91db670"><code>weapon.jsx</code></h2>
+
+<p>武器構成を入力させるモジュールです。
+ドラッグ&amp;ドロップと項目の追加削除などの表示部分も担当しています。
+実際にデータを動かしているのは<code>action.js</code>と<code>reducers.js</code>です。</p>
+
+<h2 id="summon-jsx:2fdc350de12ba0070e8c2120c91db670"><code>summon.jsx</code></h2>
+
+<p>召喚構成を入力させるモジュールです。
+こちらも<code>weapon.jsx</code>と似たような処理をしています。</p>
+
+<h1 id="終わりに:2fdc350de12ba0070e8c2120c91db670">終わりに</h1>
+
+<p>コードの量自体は多く見えますが、データの流れはそこまで難しくはありません。</p>
+
+<p>ほとんど全てのデータはreduxのstoreに保存され、
+データが更新されると関連したモジュールが更新される、と覚えておけば
+ひとまずは十分だと思います。</p>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">ファイル構成</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+<ul>
+<li><a href="#ウェブサイトにアップロードする際に必要なファイルとディレクトリ:2fdc350de12ba0070e8c2120c91db670">ウェブサイトにアップロードする際に必要なファイルとディレクトリ</a></li>
+<li><a href="#設定ファイル:2fdc350de12ba0070e8c2120c91db670">設定ファイル</a></li>
+<li><a href="#自動的に生成されるファイルとディレクトリ:2fdc350de12ba0070e8c2120c91db670">自動的に生成されるファイルとディレクトリ</a>
+<ul>
+<li><a href="#node-modules:2fdc350de12ba0070e8c2120c91db670">node_modules</a></li>
+<li><a href="#dist:2fdc350de12ba0070e8c2120c91db670">dist</a></li>
+</ul></li>
+<li><a href="#外部データとかスタイルシート:2fdc350de12ba0070e8c2120c91db670">外部データとかスタイルシート</a></li>
+<li><a href="#js-jsxファイル:2fdc350de12ba0070e8c2120c91db670">JS/JSXファイル</a>
+<ul>
+<li><a href="#entry-jsx:2fdc350de12ba0070e8c2120c91db670"><code>entry.jsx</code></a></li>
+<li><a href="#atk-calc-js:2fdc350de12ba0070e8c2120c91db670"><code>atk_calc.js</code></a></li>
+<li><a href="#get-job-data-js:2fdc350de12ba0070e8c2120c91db670"><code>get_job_data.js</code></a></li>
+<li><a href="#manupulate-form-js:2fdc350de12ba0070e8c2120c91db670"><code>manupulate_form.js</code></a></li>
+<li><a href="#reducers-js:2fdc350de12ba0070e8c2120c91db670"><code>reducers.js</code></a></li>
+<li><a href="#actions-js:2fdc350de12ba0070e8c2120c91db670"><code>actions.js</code></a></li>
+<li><a href="#calculator-jsx:2fdc350de12ba0070e8c2120c91db670"><code>calculator.jsx</code></a></li>
+<li><a href="#basic-information-jsx:2fdc350de12ba0070e8c2120c91db670"><code>basic_information.jsx</code></a></li>
+<li><a href="#friend-jsx:2fdc350de12ba0070e8c2120c91db670"><code>friend.jsx</code></a></li>
+<li><a href="#zenith-jsx:2fdc350de12ba0070e8c2120c91db670"><code>zenith.jsx</code></a></li>
+<li><a href="#weapon-jsx:2fdc350de12ba0070e8c2120c91db670"><code>weapon.jsx</code></a></li>
+<li><a href="#summon-jsx:2fdc350de12ba0070e8c2120c91db670"><code>summon.jsx</code></a></li>
+</ul></li>
+<li><a href="#終わりに:2fdc350de12ba0070e8c2120c91db670">終わりに</a></li>
+</ul>
+</nav>
+		</div>
+	</div>
+	<div class="sidebar-module">
+		<h4>Tags</h4>
+		<div class="tag-box">
+		
+		</div>
+	</div>
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	
+	
+	<p>Powered by <strong><a href="https://github.com/key-amb/hugo-theme-bootie-docs">Bootie Docs</a></strong> - theme for <a href="http://gohugo.io/">Hugo</a> by <a href="https://github.com/key-amb/">key-amb</a>.</p>
+</footer>
+
+
+
+<script src="http://philmist.github.io/gbcalc_source_doc/js/jquery-1.11.2.min.js"></script>
+<script src="http://philmist.github.io/gbcalc_source_doc/js/bootstrap.min.js"></script>
+
+<script src="http://philmist.github.io/gbcalc_source_doc/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="http://philmist.github.io/gbcalc_source_doc/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>
