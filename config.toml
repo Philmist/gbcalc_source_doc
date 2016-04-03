@@ -1,8 +1,0 @@
-baseurl = "https://philmist.github.io/gbcalc_source_doc"
-canonifyurls = true
-languageCode = "ja-jp"
-title = "グラブル計算機の読み方"
-
-[params]
-  description = "React版グラブル計算機ソースの解説"
-  mainMenu = ["howtobuild"]
