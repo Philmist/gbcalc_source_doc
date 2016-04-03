@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="https://philmist.github.io/gbcalc_source_doc/index.xml" type="application/rss+xml" title="グラブル計算機の読み方">
+		<link rel="icon" href="https://philmist.github.io/gbcalc_source_doc/favicon.ico">
+		<title>短いreact紹介と補足 - グラブル計算機の読み方</title>
+		
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/highlight.js.min.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/theme.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/bootie-docs.css">
+	</head>
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="https://philmist.github.io/gbcalc_source_doc/">グラブル計算機の読み方</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="https://philmist.github.io/gbcalc_source_doc/">Home</a></li>
+			
+				
+				
+					
+					<li ><a href="https://philmist.github.io/gbcalc_source_doc/howtobuild">Howtobuild</a></li>
+				
+			
+				
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Categories<span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+						
+							<li><a href="https://philmist.github.io/gbcalc_source_doc/categories/%E3%82%BD%E3%83%BC%E3%82%B9%E8%A7%A3%E8%AA%AC">ソース解説</a></li>
+						
+							<li><a href="https://philmist.github.io/gbcalc_source_doc/categories/%E3%83%93%E3%83%AB%E3%83%89">ビルド</a></li>
+						
+							<li><a href="https://philmist.github.io/gbcalc_source_doc/categories/%E6%8A%80%E8%A1%93%E8%A7%A3%E8%AA%AC">技術解説</a></li>
+						
+						</ul>
+					</li>
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">短いreact紹介と補足</h1>
+				<div class="doc-entry-meta">
+					<span><time datetime="2016-03-30">March 30, 2016</time></span>
+				</div>
+				<section>
+					
+
+<p>この文書では計算機アプリの根幹で使われているReactについて簡単に解説するとともに、
+公式チュートリアルでは触れられておらず、今回使用した部分について少しだけ解説します。
+なお、ちゃんとした解説は
+<a href="https://facebook.github.io/react/docs/tutorial-ja-JP.html">公式のチュートリアル</a>
+を見たほうが良いです。</p>
+
+<h1 id="reactとは:efcdea1de893c8cc5ea407a16f0e0934">Reactとは</h1>
+
+<p>Reactとはhtmlな画面をいくつかの部品に分けて書くことができるライブラリです。
+それだけなら単に文字列を組みあわせて表示させればいいのですが、
+Reactのすごいところは <strong>変更された部分だけを再描画する</strong> ことです。</p>
+
+<p>例えばある部品(コンポーネント)に何か引数を与えて描画するとします。
+その時、従来の文字列を組みあわせた手法ではhtmlとして表わされた文字列を
+全て変更することになってしまいます。
+ですが、Reactの場合は変更された部分を計算し、
+ブラウザで表示されている部分(DOMツリー)を直接いじることによって
+描画を高速にできるとされています。</p>
+
+<h1 id="jsxとコンポーネントとprops-プロパティ:efcdea1de893c8cc5ea407a16f0e0934">JSXとコンポーネントとprops(プロパティ)</h1>
+
+<p>公式ページから例を引用します。</p>
+
+<pre><code>var HelloMessage = React.createClass({
+  render: function() {
+    return &lt;div&gt;Hello {this.props.name}&lt;/div&gt;;
+  }
+});
+
+ReactDOM.render(&lt;HelloMessage name=&quot;John&quot; /&gt;, mountNode);
+</code></pre>
+
+<p>このコードではJSXというhtml(xml)に良く似た文法がJavascriptの中で使われています。
+JSXはreactを楽に使うための文法です。これはコンパイラを通すことで
+(おおよそ)次のように変換されます。</p>
+
+<pre><code>var HelloMessage = React.createClass({
+  displayName: &quot;HelloMessage&quot;,
+
+  render: function render() {
+    return React.createElement(
+      &quot;div&quot;,
+      null,
+      &quot;Hello &quot;,
+      this.props.name
+    );
+  }
+});
+
+ReactDOM.render(React.createElement(HelloMessage, { name: &quot;John&quot; }), mountNode);
+</code></pre>
+
+<p>古いJavascript(ES5)にはC++などで言うクラスは無いので、
+reactはcreateClassという関数を用意しています。
+こうして定義されたクラス(など)で、パラメータを与えられて
+renderメソッドで <em>1つの</em> 要素を返すものをコンポーネントと言います。</p>
+
+<p>reactはこういったコンポーネントを組みあわせていくことで
+画面を構成していくという点が重要です。
+そしてそのコンポーネントは呼びだしている要素から渡された引数を使うことで
+表示を変更することができるわけです。</p>
+
+<p>この渡された引数のことを <strong>props</strong> と呼びます。
+propsは親(呼びだす側)から子(呼びだされる側)への一方通行で、
+親が持っているデータを変更する場合には
+<em>親からデータを変更するための関数をpropsとして渡してもらう</em>
+という方法をとります。</p>
+
+<h1 id="state-状態:efcdea1de893c8cc5ea407a16f0e0934">state(状態)</h1>
+
+<p>コンポーネント自身が値を保持しておきたい場合があります。
+こういう場合は <em>state</em> を利用することが可能です。
+参考に公式の例を引用します。
+この例での<code>componentDidMount</code>と<code>componentWillUnmount</code>は
+描画される直前と消される直前に呼ばれる関数です。</p>
+
+<pre><code>var Timer = React.createClass({
+  getInitialState: function() {
+    return {secondsElapsed: 0};
+  },
+  tick: function() {
+    this.setState({secondsElapsed: this.state.secondsElapsed + 1});
+  },
+  componentDidMount: function() {
+    this.interval = setInterval(this.tick, 1000);
+  },
+  componentWillUnmount: function() {
+    clearInterval(this.interval);
+  },
+  render: function() {
+    return (
+      &lt;div&gt;Seconds Elapsed: {this.state.secondsElapsed}&lt;/div&gt;
+    );
+  }
+});
+
+ReactDOM.render(&lt;Timer /&gt;, mountNode);
+</code></pre>
+
+<h1 id="es6のclassを使ったコンポーネントの書き方:efcdea1de893c8cc5ea407a16f0e0934">ES6のclassを使ったコンポーネントの書き方</h1>
+
+<p>さて、計算機のコードでこういう書き方をしてもいいのですが、
+(なんとなくわかりやすいので)実際にはES6のクラスを使っています。</p>
+
+<p>最初のこのコンポーネントを例にします。</p>
+
+<pre><code>var HelloMessage = React.createClass({
+  render: function() {
+    return &lt;div&gt;Hello {this.props.name}&lt;/div&gt;;
+  }
+});
+</code></pre>
+
+<p>これはES6のクラスを使うと次のように書けます。</p>
+
+<pre><code>class HelloMessage extends React.Component {
+  render() {
+    return &lt;div&gt;Hello {this.props.name}&lt;/div&gt;;
+  }
+}
+</code></pre>
+
+<p>ただし、この書き方をする時には注意が必要です。
+<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Function/bind">MdNのbindの項</a>
+を引用します。</p>
+
+<pre><code>var x = 9;
+var module = {
+  x: 81,
+  getX: function() { return this.x; }
+};
+
+module.getX(); // 81
+
+var getX = module.getX;
+getX(); // 9, この場合 &quot;this&quot; はグローバルオブジェクトを参照するため
+
+// 'this' を module に結びつけた新しい関数を生成
+var boundGetX = getX.bind(module);
+boundGetX(); // 81
+</code></pre>
+
+<p>これと同じ問題が先のクラスで書かれたコンポーネントにも存在します。
+stateの例に挙げられていたカウンターをクラスで書きなおしたものが
+react公式にあるのでそれを引用します。</p>
+
+<pre><code>export class Counter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {count: props.initialCount};
+    this.tick = this.tick.bind(this);
+  }
+  tick() {
+    this.setState({count: this.state.count + 1});
+  }
+  render() {
+    return (
+      &lt;div onClick={this.tick}&gt;
+        Clicks: {this.state.count}
+      &lt;/div&gt;
+    );
+  }
+}
+Counter.defaultProps = { initialCount: 0 };
+</code></pre>
+
+<p>注目したいのはconstructor(そのまんまコンストラクタ関数のことです)にある
+<code>this.tick.bind(this)</code>です。
+thisは実行されている場所で変化するので、
+こうやって関数をオブジェクトのthisにbindしないと悲しみを生みます。</p>
+
+<p>なお、コンストラクタでbindしなくとも、次のような書き方をすることも可能です。
+reactのページから引用します。</p>
+
+<pre><code>&lt;div onClick={this.tick.bind(this)}&gt;  // ES5
+&lt;div onClick={() =&gt; this.tick()}&gt;  // ES6
+&lt;div onClick={::this.tick}&gt;  // ES7
+</code></pre>
+
+<p>ES6のアロー関数はその部分でのthisを保持します( <a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/arrow_functions">https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/arrow_functions</a> )
+。</p>
+
+<p>最後のES7の例は
+<a href="https://stackoverflow.com/questions/31220078/javascript-double-colon-es7-proposal/31221199">若干面倒な問題がある</a>
+んですが、
+表記が簡単になるので活用しています。</p>
+
+<p>ちなみに一番実行速度が速いのはconstructorでthisをbindしておく公式の例なので、
+なるべくなら書きかえたいですね。</p>
+
+<h1 id="備考-さらに実行速度をあげるコンポーネントの書き方:efcdea1de893c8cc5ea407a16f0e0934">備考: さらに実行速度をあげるコンポーネントの書き方</h1>
+
+<p>stateが必要ないコンポーネントならば、次の書き方でコンポーネントを定義できます(公式の例)。</p>
+
+<pre><code>function HelloMessage(props) {
+  return &lt;div&gt;Hello {props.name}&lt;/div&gt;;
+}
+</code></pre>
+
+<p>アロー関数を使って次のようにも書けます。</p>
+
+<pre><code>const HelloMessage = (props) =&gt; &lt;div&gt;Hello {props.name}&lt;/div&gt;;
+</code></pre>
+
+<p>つまり、単純にpropsを受けとって要素を返す関数(関数型のオブジェクト)です。
+このように書かれたコンポーネントは将来的に早くなる可能性があるそうです。
+ただし、最初にも書きましたが、
+stateを持つ可能性のあるコンポーネントなどはこの書き方ができません。</p>
+
+<h1 id="リストとkey:efcdea1de893c8cc5ea407a16f0e0934">リストとkey</h1>
+
+<p>リストの要素(<code>&lt;li&gt;&lt;/li&gt;</code>)などで
+複数の要素を配列(ないし類似オブジェクト)として扱い、
+その要素をコンポーネント内で展開できると便利なことがあります。
+そのようにする場合、公式例によれば書き方は以下の通りです。</p>
+
+<pre><code>var ListItemWrapper = React.createClass({
+  render: function() {
+    return &lt;li&gt;{this.props.data.text}&lt;/li&gt;;
+  }
+});
+var MyComponent = React.createClass({
+  render: function() {
+    return (
+      &lt;ul&gt;
+        {this.props.results.map(function(result) {
+           return &lt;ListItemWrapper key={result.id} data={result}/&gt;;
+        })}
+      &lt;/ul&gt;
+    );
+  }
+});
+</code></pre>
+
+<p><code>results.map()</code>は<code>results</code>が配列の時に新しい配列を作って返すための関数です。
+<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/map">MdNのArray.mapの説明</a>を参考にしてください。</p>
+
+<p>重要なのは<code>key</code>です。この場合reactは<code>key</code>を見て要素を判別します。
+<code>key</code>は親コンポーネントが子コンポーネントの各々を判別するためにあるので、
+子コンポーネント側で設定するのではなく、親コンポーネント側で設定しなければなりません
+(上の例では<code>ListItemWrapper</code>の中で指定すると失敗する)。</p>
+
+<p>このパターンは武器や召喚の表示などで使われています。
+武器の表示部分で関連するところを(一部変更して)抜きだしてみます。</p>
+
+<pre><code>// 武器の並び全体を表わすクラス
+class WeaponTableBody extends Component {
+  render() {
+    // weaponは配列なのでmapを使って要素を生成する
+    return (
+      &lt;tbody&gt;
+        {this.props.weapon.map((val, index) =&gt; { return &lt;WeaponRow key={&quot;wr_&quot;+String(index)} index={index} /&gt;; })}
+      &lt;/tbody&gt;
+    );
+  }
+}
+// 表示に使うための変数群
+const WEAPON_KIND = [
+  [&quot;sword&quot;, &quot;剣&quot;],
+  [&quot;dagger&quot;, &quot;短剣&quot;],
+  [&quot;spear&quot;, &quot;槍&quot;],
+  [&quot;axe&quot;, &quot;斧&quot;],
+  [&quot;stuff&quot;, &quot;杖&quot;],
+  [&quot;gun&quot;, &quot;銃&quot;],
+  [&quot;knuckle&quot;, &quot;格闘&quot;],
+  [&quot;bow&quot;, &quot;弓&quot;],
+  [&quot;instrument&quot;, &quot;楽器&quot;],
+  [&quot;blade&quot;, &quot;刀&quot;]
+];
+const SKILL_TYPE = [
+  [&quot;none&quot;, &quot;無し&quot;],
+  [&quot;kj1&quot;, &quot;攻刃(小)&quot;],
+  ... // 略
+];
+const SKILL_LV = [
+  [&quot;0&quot;, &quot;無し&quot;],
+  [&quot;1&quot;, &quot;1&quot;],
+  ... // 略
+];
+// 武器の1行を表わすコンポーネント
+// フォームはControlled Componentsにしているので割と面倒くさい
+class WeaponRow extends Component {
+  // 武器のoptionを生成するための関数
+  create_optfunc(key) {
+    return (
+      &lt;option value={key[0]} key={key[0]}&gt;{key[1]}&lt;/option&gt;
+    );
+  }
+
+  /* 注意: クラス変数はES7の要素 */
+  // 武器種別
+  e_kind = WEAPON_KIND.map(this.create_optfunc);
+  // スキル種別
+  e_skill_type = SKILL_TYPE.map(this.create_optfunc);
+  // スキルレベル
+  e_skill_lv = SKILL_LV.map(this.create_optfunc);
+
+  /* このあたりに値が変更された時に呼ばれる関数 */
+
+  // 実際にレンダリングされる要素を返す関数
+  // 名前は固定
+  render() {
+    // 必要な要素をpropsから変数に取りだす
+    const { isDragging, index } = this.props;
+    const { selected, name, atk, skill_level, skill_type, cosmos, type } = this.props;
+    // つかむところに適用されるスタイルを作る
+    let style_hundle = { cursor: 'move' };
+    style_hundle.color = isOver ? &quot;red&quot; : &quot;blue&quot;;
+    style_hundle.color = isDragging ? &quot;green&quot; : style_hundle.color;
+    // レンダリングされる要素を返す
+    // その際、どれがドラッグ&amp;ドロップの対象になるかを指定している
+    return (
+      &lt;tr&gt;
+        &lt;td style={ style_hundle }&gt;■&lt;/td&gt;
+        &lt;td&gt;
+          &lt;input type=&quot;checkbox&quot; className=&quot;weapon_select&quot; checked={selected} onChange={::this.change_select} /&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+          &lt;input type=&quot;text&quot; className=&quot;weapon_name width150&quot; value={name} onChange={::this.change_name} /&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+          &lt;input type=&quot;text&quot; className=&quot;weapon_atk width50&quot; value={atk} onChange={::this.change_atk} /&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+          &lt;input type=&quot;checkbox&quot; className=&quot;cosmos&quot; checked={cosmos} onChange={::this.change_cosmos} /&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+          &lt;select className=&quot;weapon_kind&quot; value={type} onChange={::this.change_kind} &gt;
+            {this.e_kind}
+          &lt;/select&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+          &lt;select className=&quot;weapon_skill_type1&quot; value={skill_type[0]} onChange={::this.change_skill_type1} &gt;
+            {this.e_skill_type}
+          &lt;/select&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+          &lt;select className=&quot;weapon_skill_type2&quot; value={skill_type[1]} onChange={::this.change_skill_type2} &gt;
+            {this.e_skill_type}
+          &lt;/select&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+          &lt;select className=&quot;weapon_skill_lv&quot; value={skill_level} onChange={::this.change_skill_lv} &gt;
+            {this.e_skill_lv}
+          &lt;/select&gt;
+        &lt;/td&gt;
+        &lt;td&gt;
+          &lt;input type=&quot;button&quot; id=&quot;ins&quot; value=&quot;+&quot; onClick={::this.push_insert} /&gt;
+          &lt;input type=&quot;button&quot; id=&quot;del&quot; value=&quot;-&quot; onClick={::this.push_delete} /&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    );
+  }
+}
+</code></pre>
+
+<p>render関数の最初にあるpropsのローカル変数への展開に関しては
+<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment">MdNに説明があります</a>。</p>
+
+<p>ソース中でも書いてありますが、クラス変数はES7からの要素なので注意してください。
+ES6ではクラスを定義したあとにクラスのプロパティとして追加する
+(この例では<code>WeaponRow.e_kind = 中身</code>としなければならない)必要があります。</p>
+
+<h1 id="jsx雑多なこと:efcdea1de893c8cc5ea407a16f0e0934">JSX雑多なこと</h1>
+
+<p>JSXはhtmlではなくJavascriptのショートカット(糖衣構文)なので、
+Javascriptの予約語を使えません。
+そのため、見た目を指定する<code>class</code>は<code>className</code>と書く必要があります。</p>
+
+<p>他にもクリックされた時などのイベントを指定する部分は
+camelCase(先頭小文字単語の区切りで大文字)を使う必要があったり、
+htmlの文字実体参照(<code>&amp;amp;</code>とか)は使えなかったりなどの制限があります。</p>
+
+<h1 id="フォームについて:efcdea1de893c8cc5ea407a16f0e0934">フォームについて</h1>
+
+<p>reactのフォームについては面倒な部分が多いので<a href="https://philmist.github.io/gbcalc_source_doc/react_form">別の文書</a>で説明します。</p>
+
+<h1 id="まとめ:efcdea1de893c8cc5ea407a16f0e0934">まとめ</h1>
+
+<p>reactを使う点で重要なのは以下です。</p>
+
+<ul>
+<li>reactはコンポーネントの組みあわせで画面を描画する</li>
+<li>データはpropsを通した親から子への一方通行</li>
+<li>子コンポーネントは親コンポーネントに要素を1つしか返せない(<code>&lt;li&gt;&lt;/li&gt;&lt;li&gt;&lt;/li&gt;</code>は不可)</li>
+</ul>
+
+<p>これだけ覚えておくと全体の理解が早くなると思います。</p>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">短いreact紹介と補足</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+<ul>
+<li><a href="#reactとは:efcdea1de893c8cc5ea407a16f0e0934">Reactとは</a></li>
+<li><a href="#jsxとコンポーネントとprops-プロパティ:efcdea1de893c8cc5ea407a16f0e0934">JSXとコンポーネントとprops(プロパティ)</a></li>
+<li><a href="#state-状態:efcdea1de893c8cc5ea407a16f0e0934">state(状態)</a></li>
+<li><a href="#es6のclassを使ったコンポーネントの書き方:efcdea1de893c8cc5ea407a16f0e0934">ES6のclassを使ったコンポーネントの書き方</a></li>
+<li><a href="#備考-さらに実行速度をあげるコンポーネントの書き方:efcdea1de893c8cc5ea407a16f0e0934">備考: さらに実行速度をあげるコンポーネントの書き方</a></li>
+<li><a href="#リストとkey:efcdea1de893c8cc5ea407a16f0e0934">リストとkey</a></li>
+<li><a href="#jsx雑多なこと:efcdea1de893c8cc5ea407a16f0e0934">JSX雑多なこと</a></li>
+<li><a href="#フォームについて:efcdea1de893c8cc5ea407a16f0e0934">フォームについて</a></li>
+<li><a href="#まとめ:efcdea1de893c8cc5ea407a16f0e0934">まとめ</a></li>
+</ul>
+</nav>
+		</div>
+	</div>
+	<div class="sidebar-module">
+		<h4>Tags</h4>
+		<div class="tag-box">
+		
+		</div>
+	</div>
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	
+	
+	<p>Powered by <strong><a href="https://github.com/key-amb/hugo-theme-bootie-docs">Bootie Docs</a></strong> - theme for <a href="http://gohugo.io/">Hugo</a> by <a href="https://github.com/key-amb/">key-amb</a>.</p>
+</footer>
+
+
+
+<script src="https://philmist.github.io/gbcalc_source_doc/js/jquery-1.11.2.min.js"></script>
+<script src="https://philmist.github.io/gbcalc_source_doc/js/bootstrap.min.js"></script>
+
+<script src="https://philmist.github.io/gbcalc_source_doc/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://philmist.github.io/gbcalc_source_doc/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,960 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>グラブル計算機の読み方</title>
+    <link>https://philmist.github.io/gbcalc_source_doc/</link>
+    <description>Recent content on グラブル計算機の読み方</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Sun, 03 Apr 2016 06:13:11 +0900</lastBuildDate>
+    <atom:link href="https://philmist.github.io/gbcalc_source_doc/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>reactのフォームについて</title>
+      <link>https://philmist.github.io/gbcalc_source_doc/react_form/</link>
+      <pubDate>Sun, 03 Apr 2016 06:13:11 +0900</pubDate>
+      
+      <guid>https://philmist.github.io/gbcalc_source_doc/react_form/</guid>
+      <description>
+
+&lt;p&gt;この文書ではreactのフォームについて説明します。&lt;/p&gt;
+
+&lt;h1 id=&#34;reactのフォーム-入力欄:9d2c39216cf3ed8ce2eb85737a736479&#34;&gt;reactのフォーム(入力欄)&lt;/h1&gt;
+
+&lt;p&gt;reactのフォームは他のコンポーネントと違って、
+&lt;em&gt;ユーザーの入力で表示内容を変化させなければなりません&lt;/em&gt; 。
+さもなければ入力しても表示が変化しないコンポーネントができます。&lt;/p&gt;
+
+&lt;p&gt;reactのフォームには2種類あります。
+&lt;em&gt;controlled components&lt;/em&gt; と &lt;em&gt;uncontrolled components&lt;/em&gt; です。
+controlledの方は(props.)valueを要素に持ち表示/入力内容を制御できるコンポーネントで、
+uncontrolledは(props.)valueを持たず全てがユーザーまかせのコンポーネントです。&lt;/p&gt;
+
+&lt;p&gt;今回はcontrolled componentsしか使っていないのでそちらについて解説します。&lt;/p&gt;
+
+&lt;h1 id=&#34;controlled-componentsの使い方:9d2c39216cf3ed8ce2eb85737a736479&#34;&gt;controlled componentsの使い方&lt;/h1&gt;
+
+&lt;p&gt;まず、ざっと流れを説明します。&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;フォームの&lt;code&gt;onChange&lt;/code&gt;に関数を指定する
+(&lt;code&gt;&amp;lt;input type=&amp;quot;text&amp;quot; onChange={なんちゃら} /&amp;gt;&lt;/code&gt;のように)&lt;/li&gt;
+&lt;li&gt;onChangeで指定された関数は引数に &lt;em&gt;イベント&lt;/em&gt; を受けとる&lt;/li&gt;
+&lt;li&gt;引数で受けとったイベント(&lt;code&gt;e&lt;/code&gt;としておきます)から入力された値を読みとる(&lt;code&gt;e.target.value&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;入力された値を処理してフォームの&lt;code&gt;value&lt;/code&gt;で指定された何か(stateとか)に値を設定する&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;公式の例を見てみましょう。
+React.createClassを使っている例なので
+&lt;code&gt;onChange&lt;/code&gt;で指定された関数は&lt;code&gt;this&lt;/code&gt;が暗黙的にbindされています。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;getInitialState: function() {
+  return {value: &#39;Hello!&#39;};
+},
+handleChange: function(event) {
+  this.setState({value: event.target.value});
+},
+render: function() {
+  return (
+    &amp;lt;input
+      type=&amp;quot;text&amp;quot;
+      value={this.state.value}
+      onChange={this.handleChange}
+    /&amp;gt;
+  );
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注意しなければならないのは
+&lt;strong&gt;&lt;code&gt;this.props.value&lt;/code&gt;に値を指定しないと表示されている値が反映されない&lt;/strong&gt;
+ということです。
+これを忘れるといつまで経っても値が更新されません。&lt;/p&gt;
+
+&lt;h1 id=&#34;子コンポーネントから親コンポーネントに値を返すという考え方:9d2c39216cf3ed8ce2eb85737a736479&#34;&gt;子コンポーネントから親コンポーネントに値を返すという考え方&lt;/h1&gt;
+
+&lt;p&gt;このフォームのテクニックは
+&lt;em&gt;子にコールバック関数を渡して親に値を渡す&lt;/em&gt;
+とも考えることができます。
+つまりコールバック関数を通して、
+親の持っている値を変更して子に渡されるpropsを変更するのです。&lt;/p&gt;
+
+&lt;p&gt;コールバック関数をpropsとして渡して親が値をもらうテクニックは
+親から子へのデータの一方通行が基本のreactでは良く使われるので
+覚えておきたいところです。&lt;/p&gt;
+
+&lt;p&gt;もっとも、今回のソースではあまりそのやり方を使っていないのですが…。&lt;/p&gt;
+
+&lt;h1 id=&#34;補足-uncontrolled-components:9d2c39216cf3ed8ce2eb85737a736479&#34;&gt;補足: uncontrolled components&lt;/h1&gt;
+
+&lt;p&gt;ちなみにフォームの&lt;code&gt;value&lt;/code&gt;に何かを割り当てない場合、
+それはuncontrolled componentsになります。
+この場合、値を読みとるのは&lt;code&gt;onChange&lt;/code&gt;からになります。&lt;/p&gt;
+
+&lt;p&gt;uncontrolled componentsは表示値を制御しにくくなるため今回は使っていません。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>短いreact紹介と補足</title>
+      <link>https://philmist.github.io/gbcalc_source_doc/react_intro/</link>
+      <pubDate>Wed, 30 Mar 2016 20:49:09 +0900</pubDate>
+      
+      <guid>https://philmist.github.io/gbcalc_source_doc/react_intro/</guid>
+      <description>
+
+&lt;p&gt;この文書では計算機アプリの根幹で使われているReactについて簡単に解説するとともに、
+公式チュートリアルでは触れられておらず、今回使用した部分について少しだけ解説します。
+なお、ちゃんとした解説は
+&lt;a href=&#34;https://facebook.github.io/react/docs/tutorial-ja-JP.html&#34;&gt;公式のチュートリアル&lt;/a&gt;
+を見たほうが良いです。&lt;/p&gt;
+
+&lt;h1 id=&#34;reactとは:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;Reactとは&lt;/h1&gt;
+
+&lt;p&gt;Reactとはhtmlな画面をいくつかの部品に分けて書くことができるライブラリです。
+それだけなら単に文字列を組みあわせて表示させればいいのですが、
+Reactのすごいところは &lt;strong&gt;変更された部分だけを再描画する&lt;/strong&gt; ことです。&lt;/p&gt;
+
+&lt;p&gt;例えばある部品(コンポーネント)に何か引数を与えて描画するとします。
+その時、従来の文字列を組みあわせた手法ではhtmlとして表わされた文字列を
+全て変更することになってしまいます。
+ですが、Reactの場合は変更された部分を計算し、
+ブラウザで表示されている部分(DOMツリー)を直接いじることによって
+描画を高速にできるとされています。&lt;/p&gt;
+
+&lt;h1 id=&#34;jsxとコンポーネントとprops-プロパティ:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;JSXとコンポーネントとprops(プロパティ)&lt;/h1&gt;
+
+&lt;p&gt;公式ページから例を引用します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var HelloMessage = React.createClass({
+  render: function() {
+    return &amp;lt;div&amp;gt;Hello {this.props.name}&amp;lt;/div&amp;gt;;
+  }
+});
+
+ReactDOM.render(&amp;lt;HelloMessage name=&amp;quot;John&amp;quot; /&amp;gt;, mountNode);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;このコードではJSXというhtml(xml)に良く似た文法がJavascriptの中で使われています。
+JSXはreactを楽に使うための文法です。これはコンパイラを通すことで
+(おおよそ)次のように変換されます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var HelloMessage = React.createClass({
+  displayName: &amp;quot;HelloMessage&amp;quot;,
+
+  render: function render() {
+    return React.createElement(
+      &amp;quot;div&amp;quot;,
+      null,
+      &amp;quot;Hello &amp;quot;,
+      this.props.name
+    );
+  }
+});
+
+ReactDOM.render(React.createElement(HelloMessage, { name: &amp;quot;John&amp;quot; }), mountNode);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;古いJavascript(ES5)にはC++などで言うクラスは無いので、
+reactはcreateClassという関数を用意しています。
+こうして定義されたクラス(など)で、パラメータを与えられて
+renderメソッドで &lt;em&gt;1つの&lt;/em&gt; 要素を返すものをコンポーネントと言います。&lt;/p&gt;
+
+&lt;p&gt;reactはこういったコンポーネントを組みあわせていくことで
+画面を構成していくという点が重要です。
+そしてそのコンポーネントは呼びだしている要素から渡された引数を使うことで
+表示を変更することができるわけです。&lt;/p&gt;
+
+&lt;p&gt;この渡された引数のことを &lt;strong&gt;props&lt;/strong&gt; と呼びます。
+propsは親(呼びだす側)から子(呼びだされる側)への一方通行で、
+親が持っているデータを変更する場合には
+&lt;em&gt;親からデータを変更するための関数をpropsとして渡してもらう&lt;/em&gt;
+という方法をとります。&lt;/p&gt;
+
+&lt;h1 id=&#34;state-状態:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;state(状態)&lt;/h1&gt;
+
+&lt;p&gt;コンポーネント自身が値を保持しておきたい場合があります。
+こういう場合は &lt;em&gt;state&lt;/em&gt; を利用することが可能です。
+参考に公式の例を引用します。
+この例での&lt;code&gt;componentDidMount&lt;/code&gt;と&lt;code&gt;componentWillUnmount&lt;/code&gt;は
+描画される直前と消される直前に呼ばれる関数です。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var Timer = React.createClass({
+  getInitialState: function() {
+    return {secondsElapsed: 0};
+  },
+  tick: function() {
+    this.setState({secondsElapsed: this.state.secondsElapsed + 1});
+  },
+  componentDidMount: function() {
+    this.interval = setInterval(this.tick, 1000);
+  },
+  componentWillUnmount: function() {
+    clearInterval(this.interval);
+  },
+  render: function() {
+    return (
+      &amp;lt;div&amp;gt;Seconds Elapsed: {this.state.secondsElapsed}&amp;lt;/div&amp;gt;
+    );
+  }
+});
+
+ReactDOM.render(&amp;lt;Timer /&amp;gt;, mountNode);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;es6のclassを使ったコンポーネントの書き方:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;ES6のclassを使ったコンポーネントの書き方&lt;/h1&gt;
+
+&lt;p&gt;さて、計算機のコードでこういう書き方をしてもいいのですが、
+(なんとなくわかりやすいので)実際にはES6のクラスを使っています。&lt;/p&gt;
+
+&lt;p&gt;最初のこのコンポーネントを例にします。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var HelloMessage = React.createClass({
+  render: function() {
+    return &amp;lt;div&amp;gt;Hello {this.props.name}&amp;lt;/div&amp;gt;;
+  }
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;これはES6のクラスを使うと次のように書けます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class HelloMessage extends React.Component {
+  render() {
+    return &amp;lt;div&amp;gt;Hello {this.props.name}&amp;lt;/div&amp;gt;;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ただし、この書き方をする時には注意が必要です。
+&lt;a href=&#34;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Function/bind&#34;&gt;MdNのbindの項&lt;/a&gt;
+を引用します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var x = 9;
+var module = {
+  x: 81,
+  getX: function() { return this.x; }
+};
+
+module.getX(); // 81
+
+var getX = module.getX;
+getX(); // 9, この場合 &amp;quot;this&amp;quot; はグローバルオブジェクトを参照するため
+
+// &#39;this&#39; を module に結びつけた新しい関数を生成
+var boundGetX = getX.bind(module);
+boundGetX(); // 81
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;これと同じ問題が先のクラスで書かれたコンポーネントにも存在します。
+stateの例に挙げられていたカウンターをクラスで書きなおしたものが
+react公式にあるのでそれを引用します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export class Counter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {count: props.initialCount};
+    this.tick = this.tick.bind(this);
+  }
+  tick() {
+    this.setState({count: this.state.count + 1});
+  }
+  render() {
+    return (
+      &amp;lt;div onClick={this.tick}&amp;gt;
+        Clicks: {this.state.count}
+      &amp;lt;/div&amp;gt;
+    );
+  }
+}
+Counter.defaultProps = { initialCount: 0 };
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注目したいのはconstructor(そのまんまコンストラクタ関数のことです)にある
+&lt;code&gt;this.tick.bind(this)&lt;/code&gt;です。
+thisは実行されている場所で変化するので、
+こうやって関数をオブジェクトのthisにbindしないと悲しみを生みます。&lt;/p&gt;
+
+&lt;p&gt;なお、コンストラクタでbindしなくとも、次のような書き方をすることも可能です。
+reactのページから引用します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;div onClick={this.tick.bind(this)}&amp;gt;  // ES5
+&amp;lt;div onClick={() =&amp;gt; this.tick()}&amp;gt;  // ES6
+&amp;lt;div onClick={::this.tick}&amp;gt;  // ES7
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ES6のアロー関数はその部分でのthisを保持します( &lt;a href=&#34;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/arrow_functions&#34;&gt;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/arrow_functions&lt;/a&gt; )
+。&lt;/p&gt;
+
+&lt;p&gt;最後のES7の例は
+&lt;a href=&#34;https://stackoverflow.com/questions/31220078/javascript-double-colon-es7-proposal/31221199&#34;&gt;若干面倒な問題がある&lt;/a&gt;
+んですが、
+表記が簡単になるので活用しています。&lt;/p&gt;
+
+&lt;p&gt;ちなみに一番実行速度が速いのはconstructorでthisをbindしておく公式の例なので、
+なるべくなら書きかえたいですね。&lt;/p&gt;
+
+&lt;h1 id=&#34;備考-さらに実行速度をあげるコンポーネントの書き方:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;備考: さらに実行速度をあげるコンポーネントの書き方&lt;/h1&gt;
+
+&lt;p&gt;stateが必要ないコンポーネントならば、次の書き方でコンポーネントを定義できます(公式の例)。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function HelloMessage(props) {
+  return &amp;lt;div&amp;gt;Hello {props.name}&amp;lt;/div&amp;gt;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;アロー関数を使って次のようにも書けます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;const HelloMessage = (props) =&amp;gt; &amp;lt;div&amp;gt;Hello {props.name}&amp;lt;/div&amp;gt;;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;つまり、単純にpropsを受けとって要素を返す関数(関数型のオブジェクト)です。
+このように書かれたコンポーネントは将来的に早くなる可能性があるそうです。
+ただし、最初にも書きましたが、
+stateを持つ可能性のあるコンポーネントなどはこの書き方ができません。&lt;/p&gt;
+
+&lt;h1 id=&#34;リストとkey:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;リストとkey&lt;/h1&gt;
+
+&lt;p&gt;リストの要素(&lt;code&gt;&amp;lt;li&amp;gt;&amp;lt;/li&amp;gt;&lt;/code&gt;)などで
+複数の要素を配列(ないし類似オブジェクト)として扱い、
+その要素をコンポーネント内で展開できると便利なことがあります。
+そのようにする場合、公式例によれば書き方は以下の通りです。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var ListItemWrapper = React.createClass({
+  render: function() {
+    return &amp;lt;li&amp;gt;{this.props.data.text}&amp;lt;/li&amp;gt;;
+  }
+});
+var MyComponent = React.createClass({
+  render: function() {
+    return (
+      &amp;lt;ul&amp;gt;
+        {this.props.results.map(function(result) {
+           return &amp;lt;ListItemWrapper key={result.id} data={result}/&amp;gt;;
+        })}
+      &amp;lt;/ul&amp;gt;
+    );
+  }
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;results.map()&lt;/code&gt;は&lt;code&gt;results&lt;/code&gt;が配列の時に新しい配列を作って返すための関数です。
+&lt;a href=&#34;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/map&#34;&gt;MdNのArray.mapの説明&lt;/a&gt;を参考にしてください。&lt;/p&gt;
+
+&lt;p&gt;重要なのは&lt;code&gt;key&lt;/code&gt;です。この場合reactは&lt;code&gt;key&lt;/code&gt;を見て要素を判別します。
+&lt;code&gt;key&lt;/code&gt;は親コンポーネントが子コンポーネントの各々を判別するためにあるので、
+子コンポーネント側で設定するのではなく、親コンポーネント側で設定しなければなりません
+(上の例では&lt;code&gt;ListItemWrapper&lt;/code&gt;の中で指定すると失敗する)。&lt;/p&gt;
+
+&lt;p&gt;このパターンは武器や召喚の表示などで使われています。
+武器の表示部分で関連するところを(一部変更して)抜きだしてみます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// 武器の並び全体を表わすクラス
+class WeaponTableBody extends Component {
+  render() {
+    // weaponは配列なのでmapを使って要素を生成する
+    return (
+      &amp;lt;tbody&amp;gt;
+        {this.props.weapon.map((val, index) =&amp;gt; { return &amp;lt;WeaponRow key={&amp;quot;wr_&amp;quot;+String(index)} index={index} /&amp;gt;; })}
+      &amp;lt;/tbody&amp;gt;
+    );
+  }
+}
+// 表示に使うための変数群
+const WEAPON_KIND = [
+  [&amp;quot;sword&amp;quot;, &amp;quot;剣&amp;quot;],
+  [&amp;quot;dagger&amp;quot;, &amp;quot;短剣&amp;quot;],
+  [&amp;quot;spear&amp;quot;, &amp;quot;槍&amp;quot;],
+  [&amp;quot;axe&amp;quot;, &amp;quot;斧&amp;quot;],
+  [&amp;quot;stuff&amp;quot;, &amp;quot;杖&amp;quot;],
+  [&amp;quot;gun&amp;quot;, &amp;quot;銃&amp;quot;],
+  [&amp;quot;knuckle&amp;quot;, &amp;quot;格闘&amp;quot;],
+  [&amp;quot;bow&amp;quot;, &amp;quot;弓&amp;quot;],
+  [&amp;quot;instrument&amp;quot;, &amp;quot;楽器&amp;quot;],
+  [&amp;quot;blade&amp;quot;, &amp;quot;刀&amp;quot;]
+];
+const SKILL_TYPE = [
+  [&amp;quot;none&amp;quot;, &amp;quot;無し&amp;quot;],
+  [&amp;quot;kj1&amp;quot;, &amp;quot;攻刃(小)&amp;quot;],
+  ... // 略
+];
+const SKILL_LV = [
+  [&amp;quot;0&amp;quot;, &amp;quot;無し&amp;quot;],
+  [&amp;quot;1&amp;quot;, &amp;quot;1&amp;quot;],
+  ... // 略
+];
+// 武器の1行を表わすコンポーネント
+// フォームはControlled Componentsにしているので割と面倒くさい
+class WeaponRow extends Component {
+  // 武器のoptionを生成するための関数
+  create_optfunc(key) {
+    return (
+      &amp;lt;option value={key[0]} key={key[0]}&amp;gt;{key[1]}&amp;lt;/option&amp;gt;
+    );
+  }
+
+  /* 注意: クラス変数はES7の要素 */
+  // 武器種別
+  e_kind = WEAPON_KIND.map(this.create_optfunc);
+  // スキル種別
+  e_skill_type = SKILL_TYPE.map(this.create_optfunc);
+  // スキルレベル
+  e_skill_lv = SKILL_LV.map(this.create_optfunc);
+
+  /* このあたりに値が変更された時に呼ばれる関数 */
+
+  // 実際にレンダリングされる要素を返す関数
+  // 名前は固定
+  render() {
+    // 必要な要素をpropsから変数に取りだす
+    const { isDragging, index } = this.props;
+    const { selected, name, atk, skill_level, skill_type, cosmos, type } = this.props;
+    // つかむところに適用されるスタイルを作る
+    let style_hundle = { cursor: &#39;move&#39; };
+    style_hundle.color = isOver ? &amp;quot;red&amp;quot; : &amp;quot;blue&amp;quot;;
+    style_hundle.color = isDragging ? &amp;quot;green&amp;quot; : style_hundle.color;
+    // レンダリングされる要素を返す
+    // その際、どれがドラッグ&amp;amp;ドロップの対象になるかを指定している
+    return (
+      &amp;lt;tr&amp;gt;
+        &amp;lt;td style={ style_hundle }&amp;gt;■&amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;input type=&amp;quot;checkbox&amp;quot; className=&amp;quot;weapon_select&amp;quot; checked={selected} onChange={::this.change_select} /&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;input type=&amp;quot;text&amp;quot; className=&amp;quot;weapon_name width150&amp;quot; value={name} onChange={::this.change_name} /&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;input type=&amp;quot;text&amp;quot; className=&amp;quot;weapon_atk width50&amp;quot; value={atk} onChange={::this.change_atk} /&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;input type=&amp;quot;checkbox&amp;quot; className=&amp;quot;cosmos&amp;quot; checked={cosmos} onChange={::this.change_cosmos} /&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;select className=&amp;quot;weapon_kind&amp;quot; value={type} onChange={::this.change_kind} &amp;gt;
+            {this.e_kind}
+          &amp;lt;/select&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;select className=&amp;quot;weapon_skill_type1&amp;quot; value={skill_type[0]} onChange={::this.change_skill_type1} &amp;gt;
+            {this.e_skill_type}
+          &amp;lt;/select&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;select className=&amp;quot;weapon_skill_type2&amp;quot; value={skill_type[1]} onChange={::this.change_skill_type2} &amp;gt;
+            {this.e_skill_type}
+          &amp;lt;/select&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;select className=&amp;quot;weapon_skill_lv&amp;quot; value={skill_level} onChange={::this.change_skill_lv} &amp;gt;
+            {this.e_skill_lv}
+          &amp;lt;/select&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;input type=&amp;quot;button&amp;quot; id=&amp;quot;ins&amp;quot; value=&amp;quot;+&amp;quot; onClick={::this.push_insert} /&amp;gt;
+          &amp;lt;input type=&amp;quot;button&amp;quot; id=&amp;quot;del&amp;quot; value=&amp;quot;-&amp;quot; onClick={::this.push_delete} /&amp;gt;
+        &amp;lt;/td&amp;gt;
+      &amp;lt;/tr&amp;gt;
+    );
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;render関数の最初にあるpropsのローカル変数への展開に関しては
+&lt;a href=&#34;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment&#34;&gt;MdNに説明があります&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;ソース中でも書いてありますが、クラス変数はES7からの要素なので注意してください。
+ES6ではクラスを定義したあとにクラスのプロパティとして追加する
+(この例では&lt;code&gt;WeaponRow.e_kind = 中身&lt;/code&gt;としなければならない)必要があります。&lt;/p&gt;
+
+&lt;h1 id=&#34;jsx雑多なこと:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;JSX雑多なこと&lt;/h1&gt;
+
+&lt;p&gt;JSXはhtmlではなくJavascriptのショートカット(糖衣構文)なので、
+Javascriptの予約語を使えません。
+そのため、見た目を指定する&lt;code&gt;class&lt;/code&gt;は&lt;code&gt;className&lt;/code&gt;と書く必要があります。&lt;/p&gt;
+
+&lt;p&gt;他にもクリックされた時などのイベントを指定する部分は
+camelCase(先頭小文字単語の区切りで大文字)を使う必要があったり、
+htmlの文字実体参照(&lt;code&gt;&amp;amp;amp;&lt;/code&gt;とか)は使えなかったりなどの制限があります。&lt;/p&gt;
+
+&lt;h1 id=&#34;フォームについて:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;フォームについて&lt;/h1&gt;
+
+&lt;p&gt;reactのフォームについては面倒な部分が多いので&lt;a href=&#34;https://philmist.github.io/gbcalc_source_doc/react_form&#34;&gt;別の文書&lt;/a&gt;で説明します。&lt;/p&gt;
+
+&lt;h1 id=&#34;まとめ:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;まとめ&lt;/h1&gt;
+
+&lt;p&gt;reactを使う点で重要なのは以下です。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;reactはコンポーネントの組みあわせで画面を描画する&lt;/li&gt;
+&lt;li&gt;データはpropsを通した親から子への一方通行&lt;/li&gt;
+&lt;li&gt;子コンポーネントは親コンポーネントに要素を1つしか返せない(&lt;code&gt;&amp;lt;li&amp;gt;&amp;lt;/li&amp;gt;&amp;lt;li&amp;gt;&amp;lt;/li&amp;gt;&lt;/code&gt;は不可)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;これだけ覚えておくと全体の理解が早くなると思います。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>ビルドで何をしているか</title>
+      <link>https://philmist.github.io/gbcalc_source_doc/build_detail/</link>
+      <pubDate>Wed, 30 Mar 2016 11:48:45 +0900</pubDate>
+      
+      <guid>https://philmist.github.io/gbcalc_source_doc/build_detail/</guid>
+      <description>
+
+&lt;p&gt;この文書では &lt;em&gt;ビルド&lt;/em&gt; で実際はいったい何をしているのかを解説します。&lt;/p&gt;
+
+&lt;h1 id=&#34;コードの分割-commonjsのやり方とes6のやり方:c148923e9003c2cad40a9cc8672acac8&#34;&gt;コードの分割、CommonJSのやり方とES6のやり方&lt;/h1&gt;
+
+&lt;p&gt;コンパイル型の言語、たとえばC++ではコードを分割して書いたのち、
+最終的に &lt;em&gt;コンパイル&lt;/em&gt; と &lt;em&gt;リンク&lt;/em&gt; をしてひとつの生成物にしています。&lt;/p&gt;
+
+&lt;p&gt;Javascriptでも同じことが行なえます。
+そのうちのリンク、つまり複数のものをひとつにまとめるツールを &lt;em&gt;bundler&lt;/em&gt; と呼んでいます。
+bundlerで有名なツールには&lt;code&gt;browserify&lt;/code&gt;と&lt;code&gt;webpack&lt;/code&gt;の2つがあって
+どちらも人気があるようですが、
+私は&lt;code&gt;webpack&lt;/code&gt;の方を選びました。&lt;/p&gt;
+
+&lt;p&gt;ところで&lt;code&gt;webpack&lt;/code&gt;を使って、
+あるコードから別のファイルにあるコードを読みこむときにはいくつかの方法があります。
+そのうち2つを今回のコードでは使っています。&lt;/p&gt;
+
+&lt;p&gt;1つは&lt;code&gt;CommonJS&lt;/code&gt;のやり方です。これは&lt;code&gt;module.exports&lt;/code&gt;と&lt;code&gt;require&lt;/code&gt;を使います。
+&lt;code&gt;module.exports&lt;/code&gt;に外へ出したいもの(変数とかオブジェクトとか)を代入すると、
+&lt;code&gt;require&lt;/code&gt;を使って出されたものを参照できます。
+例を示します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// hello.js
+var Hello = &amp;quot;Hello!&amp;quot;;
+module.exports = Hello;
+
+// world.js
+var Hello = require(&amp;quot;./hello&amp;quot;);
+console.log(Hello + &amp;quot;World!&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;もう1つは&lt;code&gt;ES6&lt;/code&gt;(&lt;code&gt;ES2015&lt;/code&gt;)のやり方です。
+&lt;code&gt;ES6&lt;/code&gt;という名称は&lt;code&gt;ECMAScript&lt;/code&gt;の第6版ということから来ています。
+これは&lt;code&gt;import&lt;/code&gt;と&lt;code&gt;export&lt;/code&gt;を使います。&lt;/p&gt;
+
+&lt;p&gt;まず、単純な例から。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// hello.js
+export var Hello = &amp;quot;Hello!&amp;quot;;
+
+// world.js
+import { Hello } from &amp;quot;./hello&amp;quot;;
+console.log(Hello + &amp;quot;World!&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ちょっと難しい例。
+&lt;a href=&#34;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/import&#34;&gt;MDNのimport&lt;/a&gt;
+を見ながらどうぞ。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// hello.js
+export var Hello = &amp;quot;Hello!&amp;quot;;
+
+// world.js
+export default function print_world(s) {
+  console.log(s + &amp;quot;World!&amp;quot;);
+}
+
+// print.js
+import * as H from &amp;quot;./hello&amp;quot;;
+import world from &amp;quot;./world&amp;quot;;
+
+world(H.Hello);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;jsx-es6-7-そしてbabel:c148923e9003c2cad40a9cc8672acac8&#34;&gt;JSX、ES6/7、そしてBabel&lt;/h1&gt;
+
+&lt;p&gt;リンクに相当する&lt;code&gt;bundler&lt;/code&gt;については説明しました。
+今度はコンパイルについて説明します。&lt;/p&gt;
+
+&lt;p&gt;今回使用しているreactというライブラリでは&lt;code&gt;JSX&lt;/code&gt;という文法が推奨されています。
+これは次のようにXMLっぽい構文をJavascriptに紛れこませられるものです。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class PlayerStats extends Component {
+  render() {
+    return (
+      &amp;lt;table className=&amp;quot;grbr&amp;quot; id=&amp;quot;info_table&amp;quot;&amp;gt;
+        &amp;lt;tbody&amp;gt;
+          &amp;lt;Rank /&amp;gt;
+          &amp;lt;ShipBonus /&amp;gt;
+          &amp;lt;AttributeBonus /&amp;gt;
+          &amp;lt;HPPercent /&amp;gt;
+        &amp;lt;/tbody&amp;gt;
+      &amp;lt;/table&amp;gt;
+    );
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;もちろん、こんな構文をブラウザが理解できるわけがありません。
+そこで必要なのが &lt;em&gt;コンパイラ&lt;/em&gt; です。
+コンパイラはこのような構文をブラウザが解釈できる構文に変換します。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Babel&lt;/code&gt;というコンパイラは、
+まだブラウザで実装されていないけれど最新の仕様では実装されている(&lt;code&gt;ES6&lt;/code&gt;とか&lt;code&gt;ES7&lt;/code&gt;)、
+というような構文を対象のブラウザが解釈できる構文に変換することも出来ます。
+&lt;code&gt;Babel&lt;/code&gt;は&lt;code&gt;webpack&lt;/code&gt;から呼びだして実行することが可能なので、私はそうしています。&lt;/p&gt;
+
+&lt;h1 id=&#34;結局webpackは何をしているか:c148923e9003c2cad40a9cc8672acac8&#34;&gt;結局webpackは何をしているか&lt;/h1&gt;
+
+&lt;p&gt;&lt;code&gt;webpack&lt;/code&gt;それ自体はリンクとコンパイルをしています。つまり次のようなことをしています。&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;エントリポイントとして指定されたJavascriptファイルを探す&lt;/li&gt;
+&lt;li&gt;指定されたファイルから呼びだされているファイルを順々に探す&lt;/li&gt;
+&lt;li&gt;Javascriptファイルを&lt;code&gt;Babel&lt;/code&gt;(正確には&lt;code&gt;babel-loader&lt;/code&gt;)に渡してコンパイルする&lt;/li&gt;
+&lt;li&gt;全てのファイルを1つにまとめる&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;こうすることで、好きな構文を使って色々なブラウザで動くJavascriptを簡単に書けるわけです。&lt;/p&gt;
+
+&lt;p&gt;なお、&lt;code&gt;webpack&lt;/code&gt;の設定ファイルは&lt;code&gt;webpack.config.js&lt;/code&gt;になります。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>ファイル構成</title>
+      <link>https://philmist.github.io/gbcalc_source_doc/file_constructure/</link>
+      <pubDate>Tue, 29 Mar 2016 19:45:25 +0900</pubDate>
+      
+      <guid>https://philmist.github.io/gbcalc_source_doc/file_constructure/</guid>
+      <description>
+
+&lt;p&gt;この文書では含まれているディレクトリやファイルがどういった意味合いなのかを解説します。&lt;/p&gt;
+
+&lt;h1 id=&#34;ウェブサイトにアップロードする際に必要なファイルとディレクトリ:2fdc350de12ba0070e8c2120c91db670&#34;&gt;ウェブサイトにアップロードする際に必要なファイルとディレクトリ&lt;/h1&gt;
+
+&lt;p&gt;先にアップロードして閲覧するのに必要なファイルとディレクトリだけを書いておきます。
+プロジェクトルートに対するディレクトリの構造は維持してください。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;data/*&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;css/*&lt;/code&gt; &lt;em&gt;実はあんまり必須ではない&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;dist/bundle.js&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;calc.html&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;設定ファイル:2fdc350de12ba0070e8c2120c91db670&#34;&gt;設定ファイル&lt;/h1&gt;
+
+&lt;p&gt;コードを書くのに使ったりする設定ファイルは以下のものです。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;.gitignore&lt;/code&gt; (バージョン管理でどのファイルを無視するか設定する)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;package.json&lt;/code&gt; (&lt;code&gt;npm&lt;/code&gt;でどんなパッケージをインストールするか設定する)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;webpack.config.js&lt;/code&gt; (&lt;code&gt;webpack&lt;/code&gt;に何をさせるかを設定する)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;自動的に生成されるファイルとディレクトリ:2fdc350de12ba0070e8c2120c91db670&#34;&gt;自動的に生成されるファイルとディレクトリ&lt;/h1&gt;
+
+&lt;p&gt;このアプリ(プロジェクト)は全体を通して &lt;em&gt;webpack&lt;/em&gt; と &lt;em&gt;npm&lt;/em&gt; に強く依存しています。
+その結果、いくつかのディレクトリとファイルが自動的に生成されて参照されます。&lt;/p&gt;
+
+&lt;h2 id=&#34;node-modules:2fdc350de12ba0070e8c2120c91db670&#34;&gt;node_modules&lt;/h2&gt;
+
+&lt;p&gt;このディレクトリはnpmがモジュール(ライブラリ)をインストールする際に使用するディレクトリです。&lt;/p&gt;
+
+&lt;p&gt;webpackもこのディレクトリからモジュールを参照するので、
+開発中は不必要にディレクトリを消すのは避けてください。&lt;/p&gt;
+
+&lt;p&gt;ただし、実際にウェブサイトとしてアップロードする際にはこのディレクトリは不要です。
+ライブラリは後述するdistディレクトリに生成されるファイルに全て含まれます。&lt;/p&gt;
+
+&lt;h2 id=&#34;dist:2fdc350de12ba0070e8c2120c91db670&#34;&gt;dist&lt;/h2&gt;
+
+&lt;p&gt;このディレクトリにwebpackは次のファイルを生成します。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;bundle.js&lt;/li&gt;
+&lt;li&gt;test_bundle.js&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;bundle.js&lt;/code&gt;の方は&lt;code&gt;calc.html&lt;/code&gt;で使われるJavascriptの本体です。
+このファイルには使用しているライブラリが &lt;strong&gt;全て&lt;/strong&gt; 含まれているので、
+かなり大きいサイズになっているはずです。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;test_bundle.js&lt;/code&gt;の方は&lt;code&gt;test.html&lt;/code&gt;で使われるJavascriptファイルです。
+このファイルも使用しているライブラリがいくつか含まれますが、
+依存関係が(今のところ)小さいのでそこまで大きくないはずです。&lt;/p&gt;
+
+&lt;h1 id=&#34;外部データとかスタイルシート:2fdc350de12ba0070e8c2120c91db670&#34;&gt;外部データとかスタイルシート&lt;/h1&gt;
+
+&lt;p&gt;次の場所にはbundle.jsなどのJavascriptから呼びだされて使用される
+データやスタイルシートがあります。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;data/job_data.json&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;css/calc.css&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;data/job_data.json&lt;/code&gt;については
+&lt;code&gt;bundle.js&lt;/code&gt;や&lt;code&gt;test_bundle.js&lt;/code&gt;からFetch API経由で呼びだされるので、
+絶対にプロジェクトルートからの位置は維持してください。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;css/calc.css&lt;/code&gt;についてですが、
+実のところこちらは&lt;code&gt;bundle.js&lt;/code&gt;にビルド時に組みこまれており、
+&lt;code&gt;test.html&lt;/code&gt;もこれを必要としないので、アップロード時には無くてもあんまり問題はありません。&lt;/p&gt;
+
+&lt;h1 id=&#34;js-jsxファイル:2fdc350de12ba0070e8c2120c91db670&#34;&gt;JS/JSXファイル&lt;/h1&gt;
+
+&lt;p&gt;これらに全て説明をつけるにはプログラム全体の説明をしなければなりませんので、
+ここでは概要にとどめます。&lt;/p&gt;
+
+&lt;h2 id=&#34;entry-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;entry.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;エントリポイント(C/C++のmain関数相当)です。
+ここでreduxのstoreを設定し、htmlと繋ぎあわせます。&lt;/p&gt;
+
+&lt;h2 id=&#34;atk-calc-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;atk_calc.js&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;与えられたパラメータオブジェクトとジョブデータから
+最終的な攻撃力を計算するための関数が入っています。
+エラー処理はほとんどしていないのでそのあたりは呼びだし側に任されています。&lt;/p&gt;
+
+&lt;h2 id=&#34;get-job-data-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;get_job_data.js&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;指定されたURLからJSONデータを読みこみPromiseオブジェクトとして返す関数が入っています。
+デフォルトの読みこみURLはプロジェクトルート直下のdataディレクトリ内&lt;code&gt;job_data.json&lt;/code&gt;です。&lt;/p&gt;
+
+&lt;h2 id=&#34;manupulate-form-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;manupulate_form.js&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;今では使っていませんが、かつて計算機のフォーム部分をテンプレート文字列を使って
+操作するのに使っていました。消しても問題ありません。&lt;/p&gt;
+
+&lt;h2 id=&#34;reducers-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;reducers.js&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;ファイルの先頭にもざっくり説明がありますが、
+reduxというライブラリを使ってstoreという変数に状態(state)を保存する際に、
+どういうactionオブジェクトが渡されたらstoreにどう保存するかを書いたモジュールです。&lt;/p&gt;
+
+&lt;h2 id=&#34;actions-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;actions.js&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;reactのコンポーネントと&lt;code&gt;reducers.js&lt;/code&gt;のreducer関数を繋げるための関数群です。
+redux-thunkというライブラリを使っているので、
+通常のreduxとは若干違う書き方になっています。&lt;/p&gt;
+
+&lt;h2 id=&#34;calculator-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;calculator.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;計算機全体のデザインと、結果表示などの小さなコンポーネントを集めたモジュールです。
+&lt;code&gt;entry.jsx&lt;/code&gt;で直接使われているモジュールです。
+他のコンポーネントの多くがここから呼びだされて使われています。
+計算結果を作るためstateの整形をして関数に渡しているのもこのモジュールです。
+また、アプリ全体でドラッグ&amp;amp;ドロップを使うためにこのモジュールで準備をしています。&lt;/p&gt;
+
+&lt;h2 id=&#34;basic-information-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;basic_information.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;基本情報(ランクや攻撃力ボーナス等)を入力させるコンポーネントが入っているモジュールです。
+ジョブを選択するため、reduxのstoreを通してジョブ情報を読んでいます。&lt;/p&gt;
+
+&lt;h2 id=&#34;friend-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;friend.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;フレンド召喚を選ぶコンポーネントが入ったモジュールです。
+現在のところほとんど何も入っていません。&lt;/p&gt;
+
+&lt;h2 id=&#34;zenith-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;zenith.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;ゼニスパークを入力させるコンポーネントが入ったモジュールです。&lt;/p&gt;
+
+&lt;h2 id=&#34;weapon-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;weapon.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;武器構成を入力させるモジュールです。
+ドラッグ&amp;amp;ドロップと項目の追加削除などの表示部分も担当しています。
+実際にデータを動かしているのは&lt;code&gt;action.js&lt;/code&gt;と&lt;code&gt;reducers.js&lt;/code&gt;です。&lt;/p&gt;
+
+&lt;h2 id=&#34;summon-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;summon.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;召喚構成を入力させるモジュールです。
+こちらも&lt;code&gt;weapon.jsx&lt;/code&gt;と似たような処理をしています。&lt;/p&gt;
+
+&lt;h1 id=&#34;終わりに:2fdc350de12ba0070e8c2120c91db670&#34;&gt;終わりに&lt;/h1&gt;
+
+&lt;p&gt;コードの量自体は多く見えますが、データの流れはそこまで難しくはありません。&lt;/p&gt;
+
+&lt;p&gt;ほとんど全てのデータはreduxのstoreに保存され、
+データが更新されると関連したモジュールが更新される、と覚えておけば
+ひとまずは十分だと思います。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>ビルドの仕方</title>
+      <link>https://philmist.github.io/gbcalc_source_doc/howtobuild/</link>
+      <pubDate>Tue, 29 Mar 2016 17:14:17 +0900</pubDate>
+      
+      <guid>https://philmist.github.io/gbcalc_source_doc/howtobuild/</guid>
+      <description>
+
+&lt;p&gt;ここではソースから実際に見るhtmlへと変換する(ビルドする)ための手順を
+解説します。&lt;/p&gt;
+
+&lt;h1 id=&#34;ビルドとは:7c6c273796fe645f68a161a205352fe1&#34;&gt;ビルドとは&lt;/h1&gt;
+
+&lt;p&gt;最近のJavascript、つまりは &lt;em&gt;ECMAScript&lt;/em&gt; のことですが、
+以下のような手順を踏んで最終的に見るべきコンテンツが生成されるようです。
+この手順をビルドと私はとりあえず呼んでいます。&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;ライブラリをたくさんローカルにインストールする&lt;/li&gt;
+&lt;li&gt;複数のスクリプトを書く&lt;/li&gt;
+&lt;li&gt;スクリプトからスクリプトを呼びだしたりする&lt;/li&gt;
+&lt;li&gt;htmlファイルから呼びだすスクリプトを1つにまとめる&lt;/li&gt;
+&lt;li&gt;htmlファイルを書く&lt;/li&gt;
+&lt;li&gt;???&lt;/li&gt;
+&lt;li&gt;PROFIT&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;複数のスクリプトを1つにまとめるためのソフトを &lt;strong&gt;bundler&lt;/strong&gt; と
+呼んでいるようです。
+bundlerがあるとスクリプトからスクリプトを呼びだすことが非常に簡単になります。&lt;/p&gt;
+
+&lt;p&gt;以下の説明は全てWindowsが前提です。&lt;/p&gt;
+
+&lt;h1 id=&#34;ビルドのやり方:7c6c273796fe645f68a161a205352fe1&#34;&gt;ビルドのやり方&lt;/h1&gt;
+
+&lt;p&gt;同梱した&lt;code&gt;readme.md&lt;/code&gt;にも書いてありますが
+もう少し詳細に解説します。&lt;/p&gt;
+
+&lt;h2 id=&#34;全ての前提-node-jsとnpm:7c6c273796fe645f68a161a205352fe1&#34;&gt;全ての前提: node.jsとnpm&lt;/h2&gt;
+
+&lt;p&gt;ライブラリをインストールしたりツールを動かしたりするために必要となるソフトがあります。
+それが &lt;strong&gt;&lt;a href=&#34;https://nodejs.org/en/&#34;&gt;node.js&lt;/a&gt;&lt;/strong&gt; です。&lt;/p&gt;
+
+&lt;p&gt;node.jsはJavascriptをコマンドラインで動かすための&lt;code&gt;node&lt;/code&gt;コマンドと、
+Javascriptのライブラリをインストールするための&lt;code&gt;npm&lt;/code&gt;コマンドが含まれています。&lt;/p&gt;
+
+&lt;p&gt;今回は&lt;code&gt;node&lt;/code&gt;コマンドを直接には使いませんが、
+&lt;code&gt;npm&lt;/code&gt;だけは各種ライブラリをインストールするのに使います。&lt;/p&gt;
+
+&lt;p&gt;ダウンロードページは英語ですが気合でインストールしてください。&lt;/p&gt;
+
+&lt;p&gt;気合が入ると(インストールされると)、&lt;code&gt;node&lt;/code&gt;コマンドと&lt;code&gt;npm&lt;/code&gt;コマンドが使えるようになります。
+以下のようにしてインストールされたことを確認できます。
+先頭の&lt;code&gt;&amp;gt;&lt;/code&gt;はコマンドプロンプトそれ自体の表示だと思ってください。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; node --version
+&amp;gt; npm --version
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;他にコマンドラインで使うものをインストールする:7c6c273796fe645f68a161a205352fe1&#34;&gt;他にコマンドラインで使うものをインストールする&lt;/h2&gt;
+
+&lt;p&gt;他にコマンドラインから直接使いたいツールの1つは、
+先に説明したbundlerの1つである &lt;strong&gt;Webpack&lt;/strong&gt; です。
+他にもbundlerはあるのですが(browserify)、
+Webpackの方が現在は人気があるようなのでこちらを使います。&lt;/p&gt;
+
+&lt;p&gt;Webpackは現在ベータの &lt;strong&gt;Webpack2&lt;/strong&gt; 系を使います。
+管理者権限があるコマンドプロンプト上で次のコマンドを入力してください。
+こうすることで&lt;code&gt;webpack&lt;/code&gt;コマンドが全体で使えるようになります。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; npm install -g webpack@^2.1.0-beta
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;他にインストールしておきたいツールはWebpackの関連ツールである
+&lt;strong&gt;webpack-dev-server&lt;/strong&gt; です。
+同梱のソースはFirefoxだとそのまま動くのですが、
+Chromeのようなブラウザだと
+(FetchAPIがローカルからの読みこみをデフォルトでは許可してくれないので)
+若干動かすのが面倒になります。&lt;/p&gt;
+
+&lt;p&gt;そこで役に立つのがwebpack-dev-serverです。
+このツールは &lt;em&gt;ローカルで簡単なHTTPサーバーを動かす&lt;/em&gt; ツールです。
+これがあることでChromeのようなブラウザも
+サーバーからの読みこみとして解釈してくれるようになります。&lt;/p&gt;
+
+&lt;p&gt;インストール方法は以下の通りです。
+やっぱり管理者権限のあるコマンドプロンプトで入力してください。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; npm install -g webpack-dev-server@^2.0.0-beta
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;ライブラリをプロジェクトディレクトリにインストールする:7c6c273796fe645f68a161a205352fe1&#34;&gt;ライブラリをプロジェクトディレクトリにインストールする&lt;/h2&gt;
+
+&lt;p&gt;さて、ソースはどこかに展開されているでしょうか。
+そのソースのディレクトリに移動して(&lt;code&gt;cd&lt;/code&gt;して)、
+コマンドプロンプトで次のコマンドを入力しましょう。
+今度は &lt;em&gt;管理者権限ではない&lt;/em&gt; 通常のコマンドプロンプトで入力してください。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; npm install
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;このコマンドはディレクトリにある&lt;code&gt;package.json&lt;/code&gt;ファイルを参照して、
+&lt;code&gt;node_modules&lt;/code&gt;ディレクトリに必要なライブラリ一式をインストールするための
+コマンドです。
+ライブラリ自体の数はそこそこなのですが、
+依存するライブラリがかなり多いのでお茶でも飲みながらお待ちください。&lt;/p&gt;
+
+&lt;h2 id=&#34;ビルドする:7c6c273796fe645f68a161a205352fe1&#34;&gt;ビルドする&lt;/h2&gt;
+
+&lt;p&gt;ライブラリのインストールは終わったでしょうか。最後はビルドです。&lt;/p&gt;
+
+&lt;p&gt;次のコマンドを通常のコマンドプロンプトで入力すればビルドが始まります。
+だいたい40秒くらいかかるのでのんびりお待ちください。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; webpack
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://philmist.github.io/gbcalc_source_doc/img/webpack_built.png&#34; alt=&#34;webpackの実行結果&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;これであとは&lt;code&gt;calc.html&lt;/code&gt;と&lt;code&gt;test.html&lt;/code&gt;を開けば目的のものが表示される…&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_6:7c6c273796fe645f68a161a205352fe1&#34;&gt;???&lt;/h2&gt;
+
+&lt;p&gt;はずでした。&lt;/p&gt;
+
+&lt;p&gt;先にも書きましたが、
+Chromeを含む一部のブラウザはローカルからのファイル読みこみを
+デフォルトでは許可していません。
+そのため、今回のような &lt;em&gt;ローカルからFetchAPIを使って読みこみする&lt;/em&gt; 場合には
+Chromeでは正常に表示することができません。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://philmist.github.io/gbcalc_source_doc/img/chrome_local_failed.png&#34; alt=&#34;chromeでローカルファイルを表示した結果&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;そこで使うのが &lt;strong&gt;webpack-dev-server&lt;/strong&gt; です。
+このツールは先にも説明した通りローカルに小さな開発用Webサーバーを立ちあげるのですが、
+他にも素晴らしいことに &lt;strong&gt;ホットリロード&lt;/strong&gt; に対応しているのです。&lt;/p&gt;
+
+&lt;p&gt;ホットリロードとは何か。
+ビルドには直接関係ないのですが、今回の例で言うとそれは
+&lt;strong&gt;ファイルを変更して保存すると自動的にビルドして画面をリロードする仕組み&lt;/strong&gt;
+です。&lt;/p&gt;
+
+&lt;p&gt;では実際に実行してみましょう。プロジェクトのルートディレクトリで以下のコマンドを実行してください。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; webpack-dev-server
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;このコマンドはデフォルトだと&lt;code&gt;localhost:8080&lt;/code&gt;にサーバーを立ちあげます。
+次のように色々表示された最後に&lt;code&gt;webpack: bundle is now VALID&lt;/code&gt;と表示されたら、
+&lt;code&gt;http://localhost:8080/calc.html&lt;/code&gt;を開いてみてください。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://philmist.github.io/gbcalc_source_doc/img/webpack_dev_server_valid.png&#34; alt=&#34;開発用サーバーのコマンドプロンプト&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;profit:7c6c273796fe645f68a161a205352fe1&#34;&gt;PROFIT!&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://philmist.github.io/gbcalc_source_doc/img/webpack_display_result.png&#34; alt=&#34;Chromiumでの表示&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;このようにChromeで表示できました。
+無事ここまで出来たのなら、おめでとうございます!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>_index</title>
+      <link>https://philmist.github.io/gbcalc_source_doc/_index/</link>
+      <pubDate>Tue, 29 Mar 2016 17:10:07 +0900</pubDate>
+      
+      <guid>https://philmist.github.io/gbcalc_source_doc/_index/</guid>
+      <description>&lt;p&gt;この文章ではグラブル計算機(React.jsバージョン)の諸々について
+解説していきます。&lt;/p&gt;
+
+&lt;p&gt;ほとんどの内容は &lt;a href=&#34;https://github.com/petehunt/react-howto&#34;&gt;react-howto&lt;/a&gt; の
+劣化版だと思ってください。&lt;/p&gt;
+
+&lt;p&gt;説明を見るには、必要なページを適当なリンクから開いてください。&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
