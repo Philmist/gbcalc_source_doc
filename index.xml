@@ -6,8 +6,492 @@
     <description>Recent content on グラブル計算機の読み方</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Wed, 30 Mar 2016 11:48:45 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 03 Apr 2016 06:13:11 +0900</lastBuildDate>
     <atom:link href="http://philmist.github.io/gbcalc_source_doc/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>reactのフォームについて</title>
+      <link>http://philmist.github.io/gbcalc_source_doc/react_form/</link>
+      <pubDate>Sun, 03 Apr 2016 06:13:11 +0900</pubDate>
+      
+      <guid>http://philmist.github.io/gbcalc_source_doc/react_form/</guid>
+      <description>
+
+&lt;p&gt;この文書ではreactのフォームについて説明します。&lt;/p&gt;
+
+&lt;h1 id=&#34;reactのフォーム-入力欄:9d2c39216cf3ed8ce2eb85737a736479&#34;&gt;reactのフォーム(入力欄)&lt;/h1&gt;
+
+&lt;p&gt;reactのフォームは他のコンポーネントと違って、
+&lt;em&gt;ユーザーの入力で表示内容を変化させなければなりません&lt;/em&gt; 。
+さもなければ入力しても表示が変化しないコンポーネントができます。&lt;/p&gt;
+
+&lt;p&gt;reactのフォームには2種類あります。
+&lt;em&gt;controlled components&lt;/em&gt; と &lt;em&gt;uncontrolled components&lt;/em&gt; です。
+controlledの方は(props.)valueを要素に持ち表示/入力内容を制御できるコンポーネントで、
+uncontrolledは(props.)valueを持たず全てがユーザーまかせのコンポーネントです。&lt;/p&gt;
+
+&lt;p&gt;今回はcontrolled componentsしか使っていないのでそちらについて解説します。&lt;/p&gt;
+
+&lt;h1 id=&#34;controlled-componentsの使い方:9d2c39216cf3ed8ce2eb85737a736479&#34;&gt;controlled componentsの使い方&lt;/h1&gt;
+
+&lt;p&gt;まず、ざっと流れを説明します。&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;フォームの&lt;code&gt;onChange&lt;/code&gt;に関数を指定する
+(&lt;code&gt;&amp;lt;input type=&amp;quot;text&amp;quot; onChange={なんちゃら} /&amp;gt;&lt;/code&gt;のように)&lt;/li&gt;
+&lt;li&gt;onChangeで指定された関数は引数に &lt;em&gt;イベント&lt;/em&gt; を受けとる&lt;/li&gt;
+&lt;li&gt;引数で受けとったイベント(&lt;code&gt;e&lt;/code&gt;としておきます)から入力された値を読みとる(&lt;code&gt;e.target.value&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;入力された値を処理してフォームの&lt;code&gt;value&lt;/code&gt;で指定された何か(stateとか)に値を設定する&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;公式の例を見てみましょう。
+React.createClassを使っている例なので
+&lt;code&gt;onChange&lt;/code&gt;で指定された関数は&lt;code&gt;this&lt;/code&gt;が暗黙的にbindされています。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;getInitialState: function() {
+  return {value: &#39;Hello!&#39;};
+},
+handleChange: function(event) {
+  this.setState({value: event.target.value});
+},
+render: function() {
+  return (
+    &amp;lt;input
+      type=&amp;quot;text&amp;quot;
+      value={this.state.value}
+      onChange={this.handleChange}
+    /&amp;gt;
+  );
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注意しなければならないのは
+&lt;strong&gt;&lt;code&gt;this.props.value&lt;/code&gt;に値を指定しないと表示されている値が反映されない&lt;/strong&gt;
+ということです。
+これを忘れるといつまで経っても値が更新されません。&lt;/p&gt;
+
+&lt;h1 id=&#34;子コンポーネントから親コンポーネントに値を返すという考え方:9d2c39216cf3ed8ce2eb85737a736479&#34;&gt;子コンポーネントから親コンポーネントに値を返すという考え方&lt;/h1&gt;
+
+&lt;p&gt;このフォームのテクニックは
+&lt;em&gt;子にコールバック関数を渡して親に値を渡す&lt;/em&gt;
+とも考えることができます。
+つまりコールバック関数を通して、
+親の持っている値を変更して子に渡されるpropsを変更するのです。&lt;/p&gt;
+
+&lt;p&gt;コールバック関数をpropsとして渡して親が値をもらうテクニックは
+親から子へのデータの一方通行が基本のreactでは良く使われるので
+覚えておきたいところです。&lt;/p&gt;
+
+&lt;p&gt;もっとも、今回のソースではあまりそのやり方を使っていないのですが…。&lt;/p&gt;
+
+&lt;h1 id=&#34;補足-uncontrolled-components:9d2c39216cf3ed8ce2eb85737a736479&#34;&gt;補足: uncontrolled components&lt;/h1&gt;
+
+&lt;p&gt;ちなみにフォームの&lt;code&gt;value&lt;/code&gt;に何かを割り当てない場合、
+それはuncontrolled componentsになります。
+この場合、値を読みとるのは&lt;code&gt;onChange&lt;/code&gt;からになります。&lt;/p&gt;
+
+&lt;p&gt;uncontrolled componentsは表示値を制御しにくくなるため今回は使っていません。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>短いreact紹介と補足</title>
+      <link>http://philmist.github.io/gbcalc_source_doc/react_intro/</link>
+      <pubDate>Wed, 30 Mar 2016 20:49:09 +0900</pubDate>
+      
+      <guid>http://philmist.github.io/gbcalc_source_doc/react_intro/</guid>
+      <description>
+
+&lt;p&gt;この文書では計算機アプリの根幹で使われているReactについて簡単に解説するとともに、
+公式チュートリアルでは触れられておらず、今回使用した部分について少しだけ解説します。
+なお、ちゃんとした解説は
+&lt;a href=&#34;https://facebook.github.io/react/docs/tutorial-ja-JP.html&#34;&gt;公式のチュートリアル&lt;/a&gt;
+を見たほうが良いです。&lt;/p&gt;
+
+&lt;h1 id=&#34;reactとは:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;Reactとは&lt;/h1&gt;
+
+&lt;p&gt;Reactとはhtmlな画面をいくつかの部品に分けて書くことができるライブラリです。
+それだけなら単に文字列を組みあわせて表示させればいいのですが、
+Reactのすごいところは &lt;strong&gt;変更された部分だけを再描画する&lt;/strong&gt; ことです。&lt;/p&gt;
+
+&lt;p&gt;例えばある部品(コンポーネント)に何か引数を与えて描画するとします。
+その時、従来の文字列を組みあわせた手法ではhtmlとして表わされた文字列を
+全て変更することになってしまいます。
+ですが、Reactの場合は変更された部分を計算し、
+ブラウザで表示されている部分(DOMツリー)を直接いじることによって
+描画を高速にできるとされています。&lt;/p&gt;
+
+&lt;h1 id=&#34;jsxとコンポーネントとprops-プロパティ:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;JSXとコンポーネントとprops(プロパティ)&lt;/h1&gt;
+
+&lt;p&gt;公式ページから例を引用します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var HelloMessage = React.createClass({
+  render: function() {
+    return &amp;lt;div&amp;gt;Hello {this.props.name}&amp;lt;/div&amp;gt;;
+  }
+});
+
+ReactDOM.render(&amp;lt;HelloMessage name=&amp;quot;John&amp;quot; /&amp;gt;, mountNode);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;このコードではJSXというhtml(xml)に良く似た文法がJavascriptの中で使われています。
+JSXはreactを楽に使うための文法です。これはコンパイラを通すことで
+(おおよそ)次のように変換されます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var HelloMessage = React.createClass({
+  displayName: &amp;quot;HelloMessage&amp;quot;,
+
+  render: function render() {
+    return React.createElement(
+      &amp;quot;div&amp;quot;,
+      null,
+      &amp;quot;Hello &amp;quot;,
+      this.props.name
+    );
+  }
+});
+
+ReactDOM.render(React.createElement(HelloMessage, { name: &amp;quot;John&amp;quot; }), mountNode);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;古いJavascript(ES5)にはC++などで言うクラスは無いので、
+reactはcreateClassという関数を用意しています。
+こうして定義されたクラス(など)で、パラメータを与えられて
+renderメソッドで &lt;em&gt;1つの&lt;/em&gt; 要素を返すものをコンポーネントと言います。&lt;/p&gt;
+
+&lt;p&gt;reactはこういったコンポーネントを組みあわせていくことで
+画面を構成していくという点が重要です。
+そしてそのコンポーネントは呼びだしている要素から渡された引数を使うことで
+表示を変更することができるわけです。&lt;/p&gt;
+
+&lt;p&gt;この渡された引数のことを &lt;strong&gt;props&lt;/strong&gt; と呼びます。
+propsは親(呼びだす側)から子(呼びだされる側)への一方通行で、
+親が持っているデータを変更する場合には
+&lt;em&gt;親からデータを変更するための関数をpropsとして渡してもらう&lt;/em&gt;
+という方法をとります。&lt;/p&gt;
+
+&lt;h1 id=&#34;state-状態:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;state(状態)&lt;/h1&gt;
+
+&lt;p&gt;コンポーネント自身が値を保持しておきたい場合があります。
+こういう場合は &lt;em&gt;state&lt;/em&gt; を利用することが可能です。
+参考に公式の例を引用します。
+この例での&lt;code&gt;componentDidMount&lt;/code&gt;と&lt;code&gt;componentWillUnmount&lt;/code&gt;は
+描画される直前と消される直前に呼ばれる関数です。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var Timer = React.createClass({
+  getInitialState: function() {
+    return {secondsElapsed: 0};
+  },
+  tick: function() {
+    this.setState({secondsElapsed: this.state.secondsElapsed + 1});
+  },
+  componentDidMount: function() {
+    this.interval = setInterval(this.tick, 1000);
+  },
+  componentWillUnmount: function() {
+    clearInterval(this.interval);
+  },
+  render: function() {
+    return (
+      &amp;lt;div&amp;gt;Seconds Elapsed: {this.state.secondsElapsed}&amp;lt;/div&amp;gt;
+    );
+  }
+});
+
+ReactDOM.render(&amp;lt;Timer /&amp;gt;, mountNode);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;es6のclassを使ったコンポーネントの書き方:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;ES6のclassを使ったコンポーネントの書き方&lt;/h1&gt;
+
+&lt;p&gt;さて、計算機のコードでこういう書き方をしてもいいのですが、
+(なんとなくわかりやすいので)実際にはES6のクラスを使っています。&lt;/p&gt;
+
+&lt;p&gt;最初のこのコンポーネントを例にします。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var HelloMessage = React.createClass({
+  render: function() {
+    return &amp;lt;div&amp;gt;Hello {this.props.name}&amp;lt;/div&amp;gt;;
+  }
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;これはES6のクラスを使うと次のように書けます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class HelloMessage extends React.Component {
+  render() {
+    return &amp;lt;div&amp;gt;Hello {this.props.name}&amp;lt;/div&amp;gt;;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ただし、この書き方をする時には注意が必要です。
+&lt;a href=&#34;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Function/bind&#34;&gt;MdNのbindの項&lt;/a&gt;
+を引用します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var x = 9;
+var module = {
+  x: 81,
+  getX: function() { return this.x; }
+};
+
+module.getX(); // 81
+
+var getX = module.getX;
+getX(); // 9, この場合 &amp;quot;this&amp;quot; はグローバルオブジェクトを参照するため
+
+// &#39;this&#39; を module に結びつけた新しい関数を生成
+var boundGetX = getX.bind(module);
+boundGetX(); // 81
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;これと同じ問題が先のクラスで書かれたコンポーネントにも存在します。
+stateの例に挙げられていたカウンターをクラスで書きなおしたものが
+react公式にあるのでそれを引用します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export class Counter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {count: props.initialCount};
+    this.tick = this.tick.bind(this);
+  }
+  tick() {
+    this.setState({count: this.state.count + 1});
+  }
+  render() {
+    return (
+      &amp;lt;div onClick={this.tick}&amp;gt;
+        Clicks: {this.state.count}
+      &amp;lt;/div&amp;gt;
+    );
+  }
+}
+Counter.defaultProps = { initialCount: 0 };
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注目したいのはconstructor(そのまんまコンストラクタ関数のことです)にある
+&lt;code&gt;this.tick.bind(this)&lt;/code&gt;です。
+thisは実行されている場所で変化するので、
+こうやって関数をオブジェクトのthisにbindしないと悲しみを生みます。&lt;/p&gt;
+
+&lt;p&gt;なお、コンストラクタでbindしなくとも、次のような書き方をすることも可能です。
+reactのページから引用します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;div onClick={this.tick.bind(this)}&amp;gt;  // ES5
+&amp;lt;div onClick={() =&amp;gt; this.tick()}&amp;gt;  // ES6
+&amp;lt;div onClick={::this.tick}&amp;gt;  // ES7
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ES6のアロー関数はその部分でのthisを保持します( &lt;a href=&#34;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/arrow_functions&#34;&gt;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/arrow_functions&lt;/a&gt; )
+。&lt;/p&gt;
+
+&lt;p&gt;最後のES7の例は
+&lt;a href=&#34;https://stackoverflow.com/questions/31220078/javascript-double-colon-es7-proposal/31221199&#34;&gt;若干面倒な問題がある&lt;/a&gt;
+んですが、
+表記が簡単になるので活用しています。&lt;/p&gt;
+
+&lt;p&gt;ちなみに一番実行速度が速いのはconstructorでthisをbindしておく公式の例なので、
+なるべくなら書きかえたいですね。&lt;/p&gt;
+
+&lt;h1 id=&#34;備考-さらに実行速度をあげるコンポーネントの書き方:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;備考: さらに実行速度をあげるコンポーネントの書き方&lt;/h1&gt;
+
+&lt;p&gt;stateが必要ないコンポーネントならば、次の書き方でコンポーネントを定義できます(公式の例)。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function HelloMessage(props) {
+  return &amp;lt;div&amp;gt;Hello {props.name}&amp;lt;/div&amp;gt;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;アロー関数を使って次のようにも書けます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;const HelloMessage = (props) =&amp;gt; &amp;lt;div&amp;gt;Hello {props.name}&amp;lt;/div&amp;gt;;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;つまり、単純にpropsを受けとって要素を返す関数(関数型のオブジェクト)です。
+このように書かれたコンポーネントは将来的に早くなる可能性があるそうです。
+ただし、最初にも書きましたが、
+stateを持つ可能性のあるコンポーネントなどはこの書き方ができません。&lt;/p&gt;
+
+&lt;h1 id=&#34;リストとkey:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;リストとkey&lt;/h1&gt;
+
+&lt;p&gt;リストの要素(&lt;code&gt;&amp;lt;li&amp;gt;&amp;lt;/li&amp;gt;&lt;/code&gt;)などで
+複数の要素を配列(ないし類似オブジェクト)として扱い、
+その要素をコンポーネント内で展開できると便利なことがあります。
+そのようにする場合、公式例によれば書き方は以下の通りです。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var ListItemWrapper = React.createClass({
+  render: function() {
+    return &amp;lt;li&amp;gt;{this.props.data.text}&amp;lt;/li&amp;gt;;
+  }
+});
+var MyComponent = React.createClass({
+  render: function() {
+    return (
+      &amp;lt;ul&amp;gt;
+        {this.props.results.map(function(result) {
+           return &amp;lt;ListItemWrapper key={result.id} data={result}/&amp;gt;;
+        })}
+      &amp;lt;/ul&amp;gt;
+    );
+  }
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;results.map()&lt;/code&gt;は&lt;code&gt;results&lt;/code&gt;が配列の時に新しい配列を作って返すための関数です。
+&lt;a href=&#34;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/map&#34;&gt;MdNのArray.mapの説明&lt;/a&gt;を参考にしてください。&lt;/p&gt;
+
+&lt;p&gt;重要なのは&lt;code&gt;key&lt;/code&gt;です。この場合reactは&lt;code&gt;key&lt;/code&gt;を見て要素を判別します。
+&lt;code&gt;key&lt;/code&gt;は親コンポーネントが子コンポーネントの各々を判別するためにあるので、
+子コンポーネント側で設定するのではなく、親コンポーネント側で設定しなければなりません
+(上の例では&lt;code&gt;ListItemWrapper&lt;/code&gt;の中で指定すると失敗する)。&lt;/p&gt;
+
+&lt;p&gt;このパターンは武器や召喚の表示などで使われています。
+武器の表示部分で関連するところを(一部変更して)抜きだしてみます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// 武器の並び全体を表わすクラス
+class WeaponTableBody extends Component {
+  render() {
+    // weaponは配列なのでmapを使って要素を生成する
+    return (
+      &amp;lt;tbody&amp;gt;
+        {this.props.weapon.map((val, index) =&amp;gt; { return &amp;lt;WeaponRow key={&amp;quot;wr_&amp;quot;+String(index)} index={index} /&amp;gt;; })}
+      &amp;lt;/tbody&amp;gt;
+    );
+  }
+}
+// 表示に使うための変数群
+const WEAPON_KIND = [
+  [&amp;quot;sword&amp;quot;, &amp;quot;剣&amp;quot;],
+  [&amp;quot;dagger&amp;quot;, &amp;quot;短剣&amp;quot;],
+  [&amp;quot;spear&amp;quot;, &amp;quot;槍&amp;quot;],
+  [&amp;quot;axe&amp;quot;, &amp;quot;斧&amp;quot;],
+  [&amp;quot;stuff&amp;quot;, &amp;quot;杖&amp;quot;],
+  [&amp;quot;gun&amp;quot;, &amp;quot;銃&amp;quot;],
+  [&amp;quot;knuckle&amp;quot;, &amp;quot;格闘&amp;quot;],
+  [&amp;quot;bow&amp;quot;, &amp;quot;弓&amp;quot;],
+  [&amp;quot;instrument&amp;quot;, &amp;quot;楽器&amp;quot;],
+  [&amp;quot;blade&amp;quot;, &amp;quot;刀&amp;quot;]
+];
+const SKILL_TYPE = [
+  [&amp;quot;none&amp;quot;, &amp;quot;無し&amp;quot;],
+  [&amp;quot;kj1&amp;quot;, &amp;quot;攻刃(小)&amp;quot;],
+  ... // 略
+];
+const SKILL_LV = [
+  [&amp;quot;0&amp;quot;, &amp;quot;無し&amp;quot;],
+  [&amp;quot;1&amp;quot;, &amp;quot;1&amp;quot;],
+  ... // 略
+];
+// 武器の1行を表わすコンポーネント
+// フォームはControlled Componentsにしているので割と面倒くさい
+class WeaponRow extends Component {
+  // 武器のoptionを生成するための関数
+  create_optfunc(key) {
+    return (
+      &amp;lt;option value={key[0]} key={key[0]}&amp;gt;{key[1]}&amp;lt;/option&amp;gt;
+    );
+  }
+
+  /* 注意: クラス変数はES7の要素 */
+  // 武器種別
+  e_kind = WEAPON_KIND.map(this.create_optfunc);
+  // スキル種別
+  e_skill_type = SKILL_TYPE.map(this.create_optfunc);
+  // スキルレベル
+  e_skill_lv = SKILL_LV.map(this.create_optfunc);
+
+  /* このあたりに値が変更された時に呼ばれる関数 */
+
+  // 実際にレンダリングされる要素を返す関数
+  // 名前は固定
+  render() {
+    // 必要な要素をpropsから変数に取りだす
+    const { isDragging, index } = this.props;
+    const { selected, name, atk, skill_level, skill_type, cosmos, type } = this.props;
+    // つかむところに適用されるスタイルを作る
+    let style_hundle = { cursor: &#39;move&#39; };
+    style_hundle.color = isOver ? &amp;quot;red&amp;quot; : &amp;quot;blue&amp;quot;;
+    style_hundle.color = isDragging ? &amp;quot;green&amp;quot; : style_hundle.color;
+    // レンダリングされる要素を返す
+    // その際、どれがドラッグ&amp;amp;ドロップの対象になるかを指定している
+    return (
+      &amp;lt;tr&amp;gt;
+        &amp;lt;td style={ style_hundle }&amp;gt;■&amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;input type=&amp;quot;checkbox&amp;quot; className=&amp;quot;weapon_select&amp;quot; checked={selected} onChange={::this.change_select} /&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;input type=&amp;quot;text&amp;quot; className=&amp;quot;weapon_name width150&amp;quot; value={name} onChange={::this.change_name} /&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;input type=&amp;quot;text&amp;quot; className=&amp;quot;weapon_atk width50&amp;quot; value={atk} onChange={::this.change_atk} /&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;input type=&amp;quot;checkbox&amp;quot; className=&amp;quot;cosmos&amp;quot; checked={cosmos} onChange={::this.change_cosmos} /&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;select className=&amp;quot;weapon_kind&amp;quot; value={type} onChange={::this.change_kind} &amp;gt;
+            {this.e_kind}
+          &amp;lt;/select&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;select className=&amp;quot;weapon_skill_type1&amp;quot; value={skill_type[0]} onChange={::this.change_skill_type1} &amp;gt;
+            {this.e_skill_type}
+          &amp;lt;/select&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;select className=&amp;quot;weapon_skill_type2&amp;quot; value={skill_type[1]} onChange={::this.change_skill_type2} &amp;gt;
+            {this.e_skill_type}
+          &amp;lt;/select&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;select className=&amp;quot;weapon_skill_lv&amp;quot; value={skill_level} onChange={::this.change_skill_lv} &amp;gt;
+            {this.e_skill_lv}
+          &amp;lt;/select&amp;gt;
+        &amp;lt;/td&amp;gt;
+        &amp;lt;td&amp;gt;
+          &amp;lt;input type=&amp;quot;button&amp;quot; id=&amp;quot;ins&amp;quot; value=&amp;quot;+&amp;quot; onClick={::this.push_insert} /&amp;gt;
+          &amp;lt;input type=&amp;quot;button&amp;quot; id=&amp;quot;del&amp;quot; value=&amp;quot;-&amp;quot; onClick={::this.push_delete} /&amp;gt;
+        &amp;lt;/td&amp;gt;
+      &amp;lt;/tr&amp;gt;
+    );
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;render関数の最初にあるpropsのローカル変数への展開に関しては
+&lt;a href=&#34;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment&#34;&gt;MdNに説明があります&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;ソース中でも書いてありますが、クラス変数はES7からの要素なので注意してください。
+ES6ではクラスを定義したあとにクラスのプロパティとして追加する
+(この例では&lt;code&gt;WeaponRow.e_kind = 中身&lt;/code&gt;としなければならない)必要があります。&lt;/p&gt;
+
+&lt;h1 id=&#34;jsx雑多なこと:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;JSX雑多なこと&lt;/h1&gt;
+
+&lt;p&gt;JSXはhtmlではなくJavascriptのショートカット(糖衣構文)なので、
+Javascriptの予約語を使えません。
+そのため、見た目を指定する&lt;code&gt;class&lt;/code&gt;は&lt;code&gt;className&lt;/code&gt;と書く必要があります。&lt;/p&gt;
+
+&lt;p&gt;他にもクリックされた時などのイベントを指定する部分は
+camelCase(先頭小文字単語の区切りで大文字)を使う必要があったり、
+htmlの文字実体参照(&lt;code&gt;&amp;amp;amp;&lt;/code&gt;とか)は使えなかったりなどの制限があります。&lt;/p&gt;
+
+&lt;h1 id=&#34;フォームについて:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;フォームについて&lt;/h1&gt;
+
+&lt;p&gt;reactのフォームについては面倒な部分が多いので&lt;a href=&#34;http://philmist.github.io/gbcalc_source_doc/react_form&#34;&gt;別の文書&lt;/a&gt;で説明します。&lt;/p&gt;
+
+&lt;h1 id=&#34;まとめ:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;まとめ&lt;/h1&gt;
+
+&lt;p&gt;reactを使う点で重要なのは以下です。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;reactはコンポーネントの組みあわせで画面を描画する&lt;/li&gt;
+&lt;li&gt;データはpropsを通した親から子への一方通行&lt;/li&gt;
+&lt;li&gt;子コンポーネントは親コンポーネントに要素を1つしか返せない(&lt;code&gt;&amp;lt;li&amp;gt;&amp;lt;/li&amp;gt;&amp;lt;li&amp;gt;&amp;lt;/li&amp;gt;&lt;/code&gt;は不可)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;これだけ覚えておくと全体の理解が早くなると思います。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>ビルドで何をしているか</title>

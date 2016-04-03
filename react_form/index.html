@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="http://philmist.github.io/gbcalc_source_doc/index.xml" type="application/rss+xml" title="グラブル計算機の読み方">
+		<link rel="icon" href="http://philmist.github.io/gbcalc_source_doc/favicon.ico">
+		<title>reactのフォームについて - グラブル計算機の読み方</title>
+		
+		<link rel="stylesheet" href="http://philmist.github.io/gbcalc_source_doc/css/highlight.js.min.css">
+		<link rel="stylesheet" href="http://philmist.github.io/gbcalc_source_doc/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://philmist.github.io/gbcalc_source_doc/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="http://philmist.github.io/gbcalc_source_doc/css/theme.css">
+		<link rel="stylesheet" href="http://philmist.github.io/gbcalc_source_doc/css/bootie-docs.css">
+	</head>
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="http://philmist.github.io/gbcalc_source_doc/">グラブル計算機の読み方</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="http://philmist.github.io/gbcalc_source_doc/">Home</a></li>
+			
+				
+				
+					
+					<li ><a href="http://philmist.github.io/gbcalc_source_doc/howtobuild">Howtobuild</a></li>
+				
+			
+				
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Categories<span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+						
+							<li><a href="http://philmist.github.io/gbcalc_source_doc/categories/%E3%82%BD%E3%83%BC%E3%82%B9%E8%A7%A3%E8%AA%AC">ソース解説</a></li>
+						
+							<li><a href="http://philmist.github.io/gbcalc_source_doc/categories/%E3%83%93%E3%83%AB%E3%83%89">ビルド</a></li>
+						
+							<li><a href="http://philmist.github.io/gbcalc_source_doc/categories/%E6%8A%80%E8%A1%93%E8%A7%A3%E8%AA%AC">技術解説</a></li>
+						
+						</ul>
+					</li>
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">reactのフォームについて</h1>
+				<div class="doc-entry-meta">
+					<span><time datetime="2016-04-03">April 03, 2016</time></span>
+				</div>
+				<section>
+					
+
+<p>この文書ではreactのフォームについて説明します。</p>
+
+<h1 id="reactのフォーム-入力欄:9d2c39216cf3ed8ce2eb85737a736479">reactのフォーム(入力欄)</h1>
+
+<p>reactのフォームは他のコンポーネントと違って、
+<em>ユーザーの入力で表示内容を変化させなければなりません</em> 。
+さもなければ入力しても表示が変化しないコンポーネントができます。</p>
+
+<p>reactのフォームには2種類あります。
+<em>controlled components</em> と <em>uncontrolled components</em> です。
+controlledの方は(props.)valueを要素に持ち表示/入力内容を制御できるコンポーネントで、
+uncontrolledは(props.)valueを持たず全てがユーザーまかせのコンポーネントです。</p>
+
+<p>今回はcontrolled componentsしか使っていないのでそちらについて解説します。</p>
+
+<h1 id="controlled-componentsの使い方:9d2c39216cf3ed8ce2eb85737a736479">controlled componentsの使い方</h1>
+
+<p>まず、ざっと流れを説明します。</p>
+
+<ol>
+<li>フォームの<code>onChange</code>に関数を指定する
+(<code>&lt;input type=&quot;text&quot; onChange={なんちゃら} /&gt;</code>のように)</li>
+<li>onChangeで指定された関数は引数に <em>イベント</em> を受けとる</li>
+<li>引数で受けとったイベント(<code>e</code>としておきます)から入力された値を読みとる(<code>e.target.value</code>)</li>
+<li>入力された値を処理してフォームの<code>value</code>で指定された何か(stateとか)に値を設定する</li>
+</ol>
+
+<p>公式の例を見てみましょう。
+React.createClassを使っている例なので
+<code>onChange</code>で指定された関数は<code>this</code>が暗黙的にbindされています。</p>
+
+<pre><code>getInitialState: function() {
+  return {value: 'Hello!'};
+},
+handleChange: function(event) {
+  this.setState({value: event.target.value});
+},
+render: function() {
+  return (
+    &lt;input
+      type=&quot;text&quot;
+      value={this.state.value}
+      onChange={this.handleChange}
+    /&gt;
+  );
+}
+</code></pre>
+
+<p>注意しなければならないのは
+<strong><code>this.props.value</code>に値を指定しないと表示されている値が反映されない</strong>
+ということです。
+これを忘れるといつまで経っても値が更新されません。</p>
+
+<h1 id="子コンポーネントから親コンポーネントに値を返すという考え方:9d2c39216cf3ed8ce2eb85737a736479">子コンポーネントから親コンポーネントに値を返すという考え方</h1>
+
+<p>このフォームのテクニックは
+<em>子にコールバック関数を渡して親に値を渡す</em>
+とも考えることができます。
+つまりコールバック関数を通して、
+親の持っている値を変更して子に渡されるpropsを変更するのです。</p>
+
+<p>コールバック関数をpropsとして渡して親が値をもらうテクニックは
+親から子へのデータの一方通行が基本のreactでは良く使われるので
+覚えておきたいところです。</p>
+
+<p>もっとも、今回のソースではあまりそのやり方を使っていないのですが…。</p>
+
+<h1 id="補足-uncontrolled-components:9d2c39216cf3ed8ce2eb85737a736479">補足: uncontrolled components</h1>
+
+<p>ちなみにフォームの<code>value</code>に何かを割り当てない場合、
+それはuncontrolled componentsになります。
+この場合、値を読みとるのは<code>onChange</code>からになります。</p>
+
+<p>uncontrolled componentsは表示値を制御しにくくなるため今回は使っていません。</p>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">reactのフォームについて</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+<ul>
+<li><a href="#reactのフォーム-入力欄:9d2c39216cf3ed8ce2eb85737a736479">reactのフォーム(入力欄)</a></li>
+<li><a href="#controlled-componentsの使い方:9d2c39216cf3ed8ce2eb85737a736479">controlled componentsの使い方</a></li>
+<li><a href="#子コンポーネントから親コンポーネントに値を返すという考え方:9d2c39216cf3ed8ce2eb85737a736479">子コンポーネントから親コンポーネントに値を返すという考え方</a></li>
+<li><a href="#補足-uncontrolled-components:9d2c39216cf3ed8ce2eb85737a736479">補足: uncontrolled components</a></li>
+</ul>
+</nav>
+		</div>
+	</div>
+	<div class="sidebar-module">
+		<h4>Tags</h4>
+		<div class="tag-box">
+		
+		</div>
+	</div>
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	
+	
+	<p>Powered by <strong><a href="https://github.com/key-amb/hugo-theme-bootie-docs">Bootie Docs</a></strong> - theme for <a href="http://gohugo.io/">Hugo</a> by <a href="https://github.com/key-amb/">key-amb</a>.</p>
+</footer>
+
+
+
+<script src="http://philmist.github.io/gbcalc_source_doc/js/jquery-1.11.2.min.js"></script>
+<script src="http://philmist.github.io/gbcalc_source_doc/js/bootstrap.min.js"></script>
+
+<script src="http://philmist.github.io/gbcalc_source_doc/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="http://philmist.github.io/gbcalc_source_doc/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>
