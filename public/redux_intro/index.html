@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="https://philmist.github.io/gbcalc_source_doc/index.xml" type="application/rss+xml" title="グラブル計算機の読み方">
+		<link rel="icon" href="https://philmist.github.io/gbcalc_source_doc/favicon.ico">
+		<title>reduxの紹介 - グラブル計算機の読み方</title>
+		
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/highlight.js.min.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/theme.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/bootie-docs.css">
+	</head>
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="https://philmist.github.io/gbcalc_source_doc/">グラブル計算機の読み方</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="https://philmist.github.io/gbcalc_source_doc/">Home</a></li>
+			
+				
+				
+					
+					<li ><a href="https://philmist.github.io/gbcalc_source_doc/howtobuild">Howtobuild</a></li>
+				
+			
+				
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Categories<span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+						
+							<li><a href="https://philmist.github.io/gbcalc_source_doc/categories/%E3%82%BD%E3%83%BC%E3%82%B9%E8%A7%A3%E8%AA%AC">ソース解説</a></li>
+						
+							<li><a href="https://philmist.github.io/gbcalc_source_doc/categories/%E3%83%93%E3%83%AB%E3%83%89">ビルド</a></li>
+						
+							<li><a href="https://philmist.github.io/gbcalc_source_doc/categories/%E6%8A%80%E8%A1%93%E8%A7%A3%E8%AA%AC">技術解説</a></li>
+						
+						</ul>
+					</li>
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">reduxの紹介</h1>
+				<div class="doc-entry-meta">
+					<span><time datetime="2016-04-03">April 03, 2016</time></span>
+				</div>
+				<section>
+					
+
+<p>この文書では計算機のデータを一括管理しているreduxというライブラリと
+それと一緒に使っているredux-thunkというライブラリについて
+解説します。</p>
+
+<h1 id="reduxの短い紹介:fa15491bdd89ef0451965db73737a97a">reduxの短い紹介</h1>
+
+<p>reduxはstate(状態)を管理するライブラリです。</p>
+
+<p>今回の計算機で使われているreactではstateをどこに保持するかは
+コードを書く側にまかされています。
+各コンポーネントは自身にstateを持つことも出来ますが、
+アプリケーション全体でどこにデータを持つかは決まっていませんでした。</p>
+
+<p>そこで出てくるのがstateを保持するためのライブラリの1つであるreduxです。
+reduxは(react-reduxという派生ライブラリと組みあわせることで)
+容易にアプリケーション全体でstateを保持し、変化させ、取りだすことができるわけです。</p>
+
+<h1 id="stateをどうやって扱うのか:fa15491bdd89ef0451965db73737a97a">stateをどうやって扱うのか</h1>
+
+<p>reduxはstateを保持する部分をアプリケーション全体で持っています。
+これをstoreと言います。</p>
+
+<p>storeで保持されているstateは基本的に読みとり専用です。
+stateを変化させるにはactionと呼ばれるオブジェクト(<code>{}</code>)を
+dispatchする(dispatchと呼ばれる関数に渡す)ことで変化を依頼します。</p>
+
+<p>actionはreducerと呼ばれる関数にstoreに保持されている現在のstateとともに渡されます。
+reducerはactionを見てstateを変化させる必要があるなら次のstateを新しく生成して返します。
+そしてstateはまたstoreに保持されます。</p>
+
+<p>このようにしてreduxはstateを管理しています。
+<a href="http://redux.js.org/index.html">公式の例</a>がわかりやすいかと思います。</p>
+
+<h2 id="reducer:fa15491bdd89ef0451965db73737a97a">reducer</h2>
+
+<p>reducerは現在のstateとactionを渡されて、次のstateを返す関数です。
+具体例を計算機のソースから持ってきます。</p>
+
+<pre><code>import * as RC from &quot;./const/reducer_type.js&quot;;
+
+// 入力ロック状態を管理するreducer
+export function inputlock_counter(state = 0, action) {
+  if (action.type == RC.inputlock.INCREMENT) {
+    return Number(state+1);
+  } else if (action.type == RC.inputlock.DECREMENT) {
+    let retval = Number(state-1);
+    if (retval &lt; 0) {
+      console.warn(&quot;Input Lock Counter is MINUS (Set to 0).&quot;);
+      retval = Number(0);
+    }
+    return retval;
+  } else {
+    return state;
+  }
+}
+</code></pre>
+
+<p><code>RC.inputlock.INCREMENT</code>などは定数だと思ってください。</p>
+
+<p>actionは<code>{ type: RC.inputlock.INCREMENT }</code>のようなオブジェクトです。
+このようなオブジェクトをreducer達に渡された時、
+<code>type</code>を見て自分が担当のreducerとわかった時にstateを
+何らかの形で変化させて返します。</p>
+
+<p>ただし注意が必要です。
+stateを変化させた場合には <strong>必ず元の変数とは違う変数で返さなければならない</strong> のです。
+これを忘れた場合、stateが変化してもstateを見ているコンポーネントには通知されません。</p>
+
+<h1 id="react-reduxの紹介:fa15491bdd89ef0451965db73737a97a">react-reduxの紹介</h1>
+
+<p>react-reduxはreduxをreact上で簡単に使うためのライブラリです。
+提供しているAPIは2つですが若干仕様が面倒です。</p>
+
+<p>まず1つ目は<code>Provider</code>です。
+これはreactのコンポーネントであり、
+公式例によれば次のようにして画面を定義するコンポーネントを覆うことで使います。
+<code>store</code>はreduxのstoreです。</p>
+
+<pre><code>ReactDOM.render(
+  &lt;Provider store={store}&gt;
+    &lt;MyRootComponent /&gt;
+  &lt;/Provider&gt;,
+  rootEl
+)
+</code></pre>
+
+<p>2つ目は<code>connect</code>です。
+これは
+<em>stateを取りだしてコンポーネントのpropsとして注入するオブジェクトを返す関数</em>
+と
+<em>コンポーネントのpropsに注入する「中でdispatchしていることを期待される関数」のオブジェクト</em>
+を引数に取ります。
+2つ目はオブジェクトを返す関数を引数に取ってもかまいません。
+なお、両方の引数ともオプションです。</p>
+
+<p>ややこしいので公式の例を使って説明します。</p>
+
+<h2 id="mapstatetoprops:fa15491bdd89ef0451965db73737a97a">mapStateToProps</h2>
+
+<p>まず1つ目は<code>mapStateToProps</code>という名前で呼ばれる引数です。</p>
+
+<p>これはソースを見るとわかると思いますが、
+state全体を引数として渡されて、
+その中から <strong>必要なstateだけを取りだして</strong> オブジェクトにして返すことを期待されています。</p>
+
+<pre><code>function mapStateToProps(state) {
+  return { todos: state.todos }
+}
+</code></pre>
+
+<p>先にも書いた通り注意が必要なのは、使うstateだけを取りだすことです。
+そうせずに不必要なstateまで取りだしてpropsに注入すると、
+stateが更新された時にpropsが更新されて、
+その際にコンポーネントが再描画されるので効率が悪くなるのです。</p>
+
+<p>最終的にオブジェクトとして返せば良いことになっているので、
+中でstateの値を使って条件判断などをしてオブジェクトを生成してもかまいません。</p>
+
+<h2 id="mapdispatchtoprops:fa15491bdd89ef0451965db73737a97a">mapDispatchToProps</h2>
+
+<p>2つ目の引数は<code>mapDispatchToProps</code>と呼ばれます。
+この引数はオブジェクトか関数を受けとります。</p>
+
+<p>オブジェクトを受けとった場合、
+そこで指定されている関数は
+全てがaction creator(actionと呼ばれるオブジェクトを返す関数)と考えられて、
+dispatchにくるんでコンポーネントのpropsに注入されます。
+言いかえれば、propsに注入された関数を使うことで自動的に目的のactionがdispatchされます。</p>
+
+<p>関数を受けとった場合は動作が若干違います。
+引数として指定された関数は、1つ目に<code>dispatch</code>、2つ目に<code>ownProps</code>と呼ばれる引数を受けとります。
+そして引数として指定された関数は <em>propsに注入する関数を含んだオブジェクト</em> を返すことが期待されています。
+なお、<code>ownProps</code>はオプションの引数であり受けとらなくてもかまいません。</p>
+
+<h1 id="redux-thunk:fa15491bdd89ef0451965db73737a97a">redux-thunk</h1>
+
+<p>さて、actionはdispatchされるオブジェクトだと前に書きました。
+今回使っているredux-thunkとよばれるライブラリ(正確にはミドルウェア)ではこれが拡張されます。
+<em>actionに関数を取ることが可能になる</em> のです。</p>
+
+<p>わけがわからないと思いますが続けます。
+actionに渡された関数は引数としてdispatchを受けとります。
+関数は中でdispatchを使いまわすことができます。
+結果として、
+<a href="http://stackoverflow.com/questions/35411423/how-to-dispatch-a-redux-action-with-a-timeout/35415559#35415559">StackOverflowに投稿されている例</a>
+のようなことができます。</p>
+
+<pre><code>// actions.js
+
+function showNotification(id, text) {
+  return { type: 'SHOW_NOTIFICATION', id, text }
+}
+function hideNotification(id) {
+  return { type: 'HIDE_NOTIFICATION', id }
+}
+
+let nextNotificationId = 0
+export function showNotificationWithTimeout(text) {
+  return function (dispatch) {
+    const id = nextNotificationId++
+    dispatch(showNotification(id, text))
+
+    setTimeout(() =&gt; {
+      dispatch(hideNotification(id))
+    }, 5000)
+  }
+}
+
+// component.js
+
+import { connect } from 'react-redux'
+
+// ...
+
+this.props.showNotificationWithTimeout('You just logged in.')
+
+// ...
+
+export default connect(
+  mapStateToProps,
+  { showNotificationWithTimeout }
+)(MyComponent)
+</code></pre>
+
+<p>connectの2つ目の引数、<code>mapDispatchToProps</code>で指定されたオブジェクトの関数は
+dispatchでくるまれることを思いだしてください。</p>
+
+<h1 id="まとめ:fa15491bdd89ef0451965db73737a97a">まとめ</h1>
+
+<ul>
+<li>reduxはstateを管理するライブラリ</li>
+<li>react-reduxをstateに繋げることで、stateの変化に応じてコンポーネントの内容を変えられる</li>
+</ul>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">reduxの紹介</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+<ul>
+<li><a href="#reduxの短い紹介:fa15491bdd89ef0451965db73737a97a">reduxの短い紹介</a></li>
+<li><a href="#stateをどうやって扱うのか:fa15491bdd89ef0451965db73737a97a">stateをどうやって扱うのか</a>
+<ul>
+<li><a href="#reducer:fa15491bdd89ef0451965db73737a97a">reducer</a></li>
+</ul></li>
+<li><a href="#react-reduxの紹介:fa15491bdd89ef0451965db73737a97a">react-reduxの紹介</a>
+<ul>
+<li><a href="#mapstatetoprops:fa15491bdd89ef0451965db73737a97a">mapStateToProps</a></li>
+<li><a href="#mapdispatchtoprops:fa15491bdd89ef0451965db73737a97a">mapDispatchToProps</a></li>
+</ul></li>
+<li><a href="#redux-thunk:fa15491bdd89ef0451965db73737a97a">redux-thunk</a></li>
+<li><a href="#まとめ:fa15491bdd89ef0451965db73737a97a">まとめ</a></li>
+</ul>
+</nav>
+		</div>
+	</div>
+	<div class="sidebar-module">
+		<h4>Tags</h4>
+		<div class="tag-box">
+		
+		</div>
+	</div>
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	
+	
+	<p>Powered by <strong><a href="https://github.com/key-amb/hugo-theme-bootie-docs">Bootie Docs</a></strong> - theme for <a href="http://gohugo.io/">Hugo</a> by <a href="https://github.com/key-amb/">key-amb</a>.</p>
+</footer>
+
+
+
+<script src="https://philmist.github.io/gbcalc_source_doc/js/jquery-1.11.2.min.js"></script>
+<script src="https://philmist.github.io/gbcalc_source_doc/js/bootstrap.min.js"></script>
+
+<script src="https://philmist.github.io/gbcalc_source_doc/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://philmist.github.io/gbcalc_source_doc/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>

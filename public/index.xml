@@ -6,8 +6,212 @@
     <description>Recent content on グラブル計算機の読み方</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Sun, 03 Apr 2016 06:13:11 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 03 Apr 2016 21:33:34 +0900</lastBuildDate>
     <atom:link href="https://philmist.github.io/gbcalc_source_doc/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>reduxの紹介</title>
+      <link>https://philmist.github.io/gbcalc_source_doc/redux_intro/</link>
+      <pubDate>Sun, 03 Apr 2016 21:33:34 +0900</pubDate>
+      
+      <guid>https://philmist.github.io/gbcalc_source_doc/redux_intro/</guid>
+      <description>
+
+&lt;p&gt;この文書では計算機のデータを一括管理しているreduxというライブラリと
+それと一緒に使っているredux-thunkというライブラリについて
+解説します。&lt;/p&gt;
+
+&lt;h1 id=&#34;reduxの短い紹介:fa15491bdd89ef0451965db73737a97a&#34;&gt;reduxの短い紹介&lt;/h1&gt;
+
+&lt;p&gt;reduxはstate(状態)を管理するライブラリです。&lt;/p&gt;
+
+&lt;p&gt;今回の計算機で使われているreactではstateをどこに保持するかは
+コードを書く側にまかされています。
+各コンポーネントは自身にstateを持つことも出来ますが、
+アプリケーション全体でどこにデータを持つかは決まっていませんでした。&lt;/p&gt;
+
+&lt;p&gt;そこで出てくるのがstateを保持するためのライブラリの1つであるreduxです。
+reduxは(react-reduxという派生ライブラリと組みあわせることで)
+容易にアプリケーション全体でstateを保持し、変化させ、取りだすことができるわけです。&lt;/p&gt;
+
+&lt;h1 id=&#34;stateをどうやって扱うのか:fa15491bdd89ef0451965db73737a97a&#34;&gt;stateをどうやって扱うのか&lt;/h1&gt;
+
+&lt;p&gt;reduxはstateを保持する部分をアプリケーション全体で持っています。
+これをstoreと言います。&lt;/p&gt;
+
+&lt;p&gt;storeで保持されているstateは基本的に読みとり専用です。
+stateを変化させるにはactionと呼ばれるオブジェクト(&lt;code&gt;{}&lt;/code&gt;)を
+dispatchする(dispatchと呼ばれる関数に渡す)ことで変化を依頼します。&lt;/p&gt;
+
+&lt;p&gt;actionはreducerと呼ばれる関数にstoreに保持されている現在のstateとともに渡されます。
+reducerはactionを見てstateを変化させる必要があるなら次のstateを新しく生成して返します。
+そしてstateはまたstoreに保持されます。&lt;/p&gt;
+
+&lt;p&gt;このようにしてreduxはstateを管理しています。
+&lt;a href=&#34;http://redux.js.org/index.html&#34;&gt;公式の例&lt;/a&gt;がわかりやすいかと思います。&lt;/p&gt;
+
+&lt;h2 id=&#34;reducer:fa15491bdd89ef0451965db73737a97a&#34;&gt;reducer&lt;/h2&gt;
+
+&lt;p&gt;reducerは現在のstateとactionを渡されて、次のstateを返す関数です。
+具体例を計算機のソースから持ってきます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;import * as RC from &amp;quot;./const/reducer_type.js&amp;quot;;
+
+// 入力ロック状態を管理するreducer
+export function inputlock_counter(state = 0, action) {
+  if (action.type == RC.inputlock.INCREMENT) {
+    return Number(state+1);
+  } else if (action.type == RC.inputlock.DECREMENT) {
+    let retval = Number(state-1);
+    if (retval &amp;lt; 0) {
+      console.warn(&amp;quot;Input Lock Counter is MINUS (Set to 0).&amp;quot;);
+      retval = Number(0);
+    }
+    return retval;
+  } else {
+    return state;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;RC.inputlock.INCREMENT&lt;/code&gt;などは定数だと思ってください。&lt;/p&gt;
+
+&lt;p&gt;actionは&lt;code&gt;{ type: RC.inputlock.INCREMENT }&lt;/code&gt;のようなオブジェクトです。
+このようなオブジェクトをreducer達に渡された時、
+&lt;code&gt;type&lt;/code&gt;を見て自分が担当のreducerとわかった時にstateを
+何らかの形で変化させて返します。&lt;/p&gt;
+
+&lt;p&gt;ただし注意が必要です。
+stateを変化させた場合には &lt;strong&gt;必ず元の変数とは違う変数で返さなければならない&lt;/strong&gt; のです。
+これを忘れた場合、stateが変化してもstateを見ているコンポーネントには通知されません。&lt;/p&gt;
+
+&lt;h1 id=&#34;react-reduxの紹介:fa15491bdd89ef0451965db73737a97a&#34;&gt;react-reduxの紹介&lt;/h1&gt;
+
+&lt;p&gt;react-reduxはreduxをreact上で簡単に使うためのライブラリです。
+提供しているAPIは2つですが若干仕様が面倒です。&lt;/p&gt;
+
+&lt;p&gt;まず1つ目は&lt;code&gt;Provider&lt;/code&gt;です。
+これはreactのコンポーネントであり、
+公式例によれば次のようにして画面を定義するコンポーネントを覆うことで使います。
+&lt;code&gt;store&lt;/code&gt;はreduxのstoreです。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ReactDOM.render(
+  &amp;lt;Provider store={store}&amp;gt;
+    &amp;lt;MyRootComponent /&amp;gt;
+  &amp;lt;/Provider&amp;gt;,
+  rootEl
+)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;2つ目は&lt;code&gt;connect&lt;/code&gt;です。
+これは
+&lt;em&gt;stateを取りだしてコンポーネントのpropsとして注入するオブジェクトを返す関数&lt;/em&gt;
+と
+&lt;em&gt;コンポーネントのpropsに注入する「中でdispatchしていることを期待される関数」のオブジェクト&lt;/em&gt;
+を引数に取ります。
+2つ目はオブジェクトを返す関数を引数に取ってもかまいません。
+なお、両方の引数ともオプションです。&lt;/p&gt;
+
+&lt;p&gt;ややこしいので公式の例を使って説明します。&lt;/p&gt;
+
+&lt;h2 id=&#34;mapstatetoprops:fa15491bdd89ef0451965db73737a97a&#34;&gt;mapStateToProps&lt;/h2&gt;
+
+&lt;p&gt;まず1つ目は&lt;code&gt;mapStateToProps&lt;/code&gt;という名前で呼ばれる引数です。&lt;/p&gt;
+
+&lt;p&gt;これはソースを見るとわかると思いますが、
+state全体を引数として渡されて、
+その中から &lt;strong&gt;必要なstateだけを取りだして&lt;/strong&gt; オブジェクトにして返すことを期待されています。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function mapStateToProps(state) {
+  return { todos: state.todos }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;先にも書いた通り注意が必要なのは、使うstateだけを取りだすことです。
+そうせずに不必要なstateまで取りだしてpropsに注入すると、
+stateが更新された時にpropsが更新されて、
+その際にコンポーネントが再描画されるので効率が悪くなるのです。&lt;/p&gt;
+
+&lt;p&gt;最終的にオブジェクトとして返せば良いことになっているので、
+中でstateの値を使って条件判断などをしてオブジェクトを生成してもかまいません。&lt;/p&gt;
+
+&lt;h2 id=&#34;mapdispatchtoprops:fa15491bdd89ef0451965db73737a97a&#34;&gt;mapDispatchToProps&lt;/h2&gt;
+
+&lt;p&gt;2つ目の引数は&lt;code&gt;mapDispatchToProps&lt;/code&gt;と呼ばれます。
+この引数はオブジェクトか関数を受けとります。&lt;/p&gt;
+
+&lt;p&gt;オブジェクトを受けとった場合、
+そこで指定されている関数は
+全てがaction creator(actionと呼ばれるオブジェクトを返す関数)と考えられて、
+dispatchにくるんでコンポーネントのpropsに注入されます。
+言いかえれば、propsに注入された関数を使うことで自動的に目的のactionがdispatchされます。&lt;/p&gt;
+
+&lt;p&gt;関数を受けとった場合は動作が若干違います。
+引数として指定された関数は、1つ目に&lt;code&gt;dispatch&lt;/code&gt;、2つ目に&lt;code&gt;ownProps&lt;/code&gt;と呼ばれる引数を受けとります。
+そして引数として指定された関数は &lt;em&gt;propsに注入する関数を含んだオブジェクト&lt;/em&gt; を返すことが期待されています。
+なお、&lt;code&gt;ownProps&lt;/code&gt;はオプションの引数であり受けとらなくてもかまいません。&lt;/p&gt;
+
+&lt;h1 id=&#34;redux-thunk:fa15491bdd89ef0451965db73737a97a&#34;&gt;redux-thunk&lt;/h1&gt;
+
+&lt;p&gt;さて、actionはdispatchされるオブジェクトだと前に書きました。
+今回使っているredux-thunkとよばれるライブラリ(正確にはミドルウェア)ではこれが拡張されます。
+&lt;em&gt;actionに関数を取ることが可能になる&lt;/em&gt; のです。&lt;/p&gt;
+
+&lt;p&gt;わけがわからないと思いますが続けます。
+actionに渡された関数は引数としてdispatchを受けとります。
+関数は中でdispatchを使いまわすことができます。
+結果として、
+&lt;a href=&#34;http://stackoverflow.com/questions/35411423/how-to-dispatch-a-redux-action-with-a-timeout/35415559#35415559&#34;&gt;StackOverflowに投稿されている例&lt;/a&gt;
+のようなことができます。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// actions.js
+
+function showNotification(id, text) {
+  return { type: &#39;SHOW_NOTIFICATION&#39;, id, text }
+}
+function hideNotification(id) {
+  return { type: &#39;HIDE_NOTIFICATION&#39;, id }
+}
+
+let nextNotificationId = 0
+export function showNotificationWithTimeout(text) {
+  return function (dispatch) {
+    const id = nextNotificationId++
+    dispatch(showNotification(id, text))
+
+    setTimeout(() =&amp;gt; {
+      dispatch(hideNotification(id))
+    }, 5000)
+  }
+}
+
+// component.js
+
+import { connect } from &#39;react-redux&#39;
+
+// ...
+
+this.props.showNotificationWithTimeout(&#39;You just logged in.&#39;)
+
+// ...
+
+export default connect(
+  mapStateToProps,
+  { showNotificationWithTimeout }
+)(MyComponent)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;connectの2つ目の引数、&lt;code&gt;mapDispatchToProps&lt;/code&gt;で指定されたオブジェクトの関数は
+dispatchでくるまれることを思いだしてください。&lt;/p&gt;
+
+&lt;h1 id=&#34;まとめ:fa15491bdd89ef0451965db73737a97a&#34;&gt;まとめ&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;reduxはstateを管理するライブラリ&lt;/li&gt;
+&lt;li&gt;react-reduxをstateに繋げることで、stateの変化に応じてコンポーネントの内容を変えられる&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
     
     <item>
       <title>reactのフォームについて</title>
@@ -288,9 +492,6 @@ reactのページから引用します。&lt;/p&gt;
 &lt;a href=&#34;https://stackoverflow.com/questions/31220078/javascript-double-colon-es7-proposal/31221199&#34;&gt;若干面倒な問題がある&lt;/a&gt;
 んですが、
 表記が簡単になるので活用しています。&lt;/p&gt;
-
-&lt;p&gt;ちなみに一番実行速度が速いのはconstructorでthisをbindしておく公式の例なので、
-なるべくなら書きかえたいですね。&lt;/p&gt;
 
 &lt;h1 id=&#34;備考-さらに実行速度をあげるコンポーネントの書き方:efcdea1de893c8cc5ea407a16f0e0934&#34;&gt;備考: さらに実行速度をあげるコンポーネントの書き方&lt;/h1&gt;
 
