@@ -832,8 +832,6 @@ world(H.Hello);
 プロジェクトルートに対するディレクトリの構造は維持してください。&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;data/*&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;css/*&lt;/code&gt; &lt;em&gt;実はあんまり必須ではない&lt;/em&gt;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;dist/bundle.js&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;calc.html&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -880,25 +878,30 @@ world(H.Hello);
 このファイルも使用しているライブラリがいくつか含まれますが、
 依存関係が(今のところ)小さいのでそこまで大きくないはずです。&lt;/p&gt;
 
-&lt;h1 id=&#34;外部データとかスタイルシート:2fdc350de12ba0070e8c2120c91db670&#34;&gt;外部データとかスタイルシート&lt;/h1&gt;
+&lt;h1 id=&#34;スタイルシート-css:2fdc350de12ba0070e8c2120c91db670&#34;&gt;スタイルシート(&lt;code&gt;css/&lt;/code&gt;)&lt;/h1&gt;
 
-&lt;p&gt;次の場所にはbundle.jsなどのJavascriptから呼びだされて使用される
-データやスタイルシートがあります。&lt;/p&gt;
+&lt;p&gt;スタイルは各モジュールごとに分けられていることに注意してください。&lt;/p&gt;
 
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;data/job_data.json&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;css/calc.css&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
+&lt;h2 id=&#34;global-css:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;global.css&lt;/code&gt;&lt;/h2&gt;
 
-&lt;p&gt;&lt;code&gt;data/job_data.json&lt;/code&gt;については
-&lt;code&gt;bundle.js&lt;/code&gt;や&lt;code&gt;test_bundle.js&lt;/code&gt;からFetch API経由で呼びだされるので、
-絶対にプロジェクトルートからの位置は維持してください。&lt;/p&gt;
+&lt;p&gt;サイト全体に適用されるスタイルです。&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;css/calc.css&lt;/code&gt;についてですが、
-実のところこちらは&lt;code&gt;bundle.js&lt;/code&gt;にビルド時に組みこまれており、
-&lt;code&gt;test.html&lt;/code&gt;もこれを必要としないので、アップロード時には無くてもあんまり問題はありません。&lt;/p&gt;
+&lt;h2 id=&#34;app-css:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;app.css&lt;/code&gt;&lt;/h2&gt;
 
-&lt;h1 id=&#34;js-jsxファイル:2fdc350de12ba0070e8c2120c91db670&#34;&gt;JS/JSXファイル&lt;/h1&gt;
+&lt;p&gt;アプリ全体で使用するスタイルです。
+ここから各ファイルでスタイルを継承して使っています。&lt;/p&gt;
+
+&lt;h2 id=&#34;tables-css:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;tables.css&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;アプリ全体で使うなかで一番多いテーブルのスタイルを定義したファイルです。
+これも各ファイルで継承されて使われています。&lt;/p&gt;
+
+&lt;h2 id=&#34;その他の-css:2fdc350de12ba0070e8c2120c91db670&#34;&gt;その他の&lt;code&gt;*.css&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;これらのファイルは以下で説明する各JSXファイルと関連づけられています。
+1つのJSXに1つのCSSファイルと思ってください。&lt;/p&gt;
+
+&lt;h1 id=&#34;js-jsxファイル-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;JS/JSXファイル(&lt;code&gt;js/&lt;/code&gt;)&lt;/h1&gt;
 
 &lt;p&gt;これらに全て説明をつけるにはプログラム全体の説明をしなければなりませんので、
 ここでは概要にとどめます。&lt;/p&gt;
@@ -918,11 +921,6 @@ world(H.Hello);
 
 &lt;p&gt;指定されたURLからJSONデータを読みこみPromiseオブジェクトとして返す関数が入っています。
 デフォルトの読みこみURLはプロジェクトルート直下のdataディレクトリ内&lt;code&gt;job_data.json&lt;/code&gt;です。&lt;/p&gt;
-
-&lt;h2 id=&#34;manupulate-form-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;manupulate_form.js&lt;/code&gt;&lt;/h2&gt;
-
-&lt;p&gt;今では使っていませんが、かつて計算機のフォーム部分をテンプレート文字列を使って
-操作するのに使っていました。消しても問題ありません。&lt;/p&gt;
 
 &lt;h2 id=&#34;reducers-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;reducers.js&lt;/code&gt;&lt;/h2&gt;
 
@@ -949,11 +947,6 @@ redux-thunkというライブラリを使っているので、
 &lt;p&gt;基本情報(ランクや攻撃力ボーナス等)を入力させるコンポーネントが入っているモジュールです。
 ジョブを選択するため、reduxのstoreを通してジョブ情報を読んでいます。&lt;/p&gt;
 
-&lt;h2 id=&#34;friend-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;friend.jsx&lt;/code&gt;&lt;/h2&gt;
-
-&lt;p&gt;フレンド召喚を選ぶコンポーネントが入ったモジュールです。
-現在のところほとんど何も入っていません。&lt;/p&gt;
-
 &lt;h2 id=&#34;zenith-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;zenith.jsx&lt;/code&gt;&lt;/h2&gt;
 
 &lt;p&gt;ゼニスパークを入力させるコンポーネントが入ったモジュールです。&lt;/p&gt;
@@ -968,6 +961,15 @@ redux-thunkというライブラリを使っているので、
 
 &lt;p&gt;召喚構成を入力させるモジュールです。
 こちらも&lt;code&gt;weapon.jsx&lt;/code&gt;と似たような処理をしています。&lt;/p&gt;
+
+&lt;h2 id=&#34;friend-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;friend.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;フレンド召喚を選ぶコンポーネントが入ったモジュールです。
+&lt;code&gt;summon.jsx&lt;/code&gt;を内部で参照しています。&lt;/p&gt;
+
+&lt;h1 id=&#34;定数-js-const:2fdc350de12ba0070e8c2120c91db670&#34;&gt;定数(&lt;code&gt;js/const/&lt;/code&gt;)&lt;/h1&gt;
+
+&lt;p&gt;この中にあるファイルはJS/JSXファイルで定数として使われています。&lt;/p&gt;
 
 &lt;h1 id=&#34;終わりに:2fdc350de12ba0070e8c2120c91db670&#34;&gt;終わりに&lt;/h1&gt;
 
