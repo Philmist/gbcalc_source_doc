@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="https://philmist.github.io/gbcalc_source_doc/index.xml" type="application/rss+xml" title="グラブル計算機の読み方">
+		<link rel="icon" href="https://philmist.github.io/gbcalc_source_doc/favicon.ico">
+		<title>SourceTreeとGitHubを使いはじめるまで - グラブル計算機の読み方</title>
+		
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/highlight.js.min.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/theme.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/bootie-docs.css">
+	</head>
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="https://philmist.github.io/gbcalc_source_doc/">グラブル計算機の読み方</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="https://philmist.github.io/gbcalc_source_doc/">Home</a></li>
+			
+				
+				
+					
+					<li ><a href="https://philmist.github.io/gbcalc_source_doc/howtobuild">Howtobuild</a></li>
+				
+			
+				
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Categories<span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+						
+							<li><a href="https://philmist.github.io/gbcalc_source_doc/categories/%E3%82%BD%E3%83%BC%E3%82%B9%E8%A7%A3%E8%AA%AC">ソース解説</a></li>
+						
+							<li><a href="https://philmist.github.io/gbcalc_source_doc/categories/%E3%83%93%E3%83%AB%E3%83%89">ビルド</a></li>
+						
+							<li><a href="https://philmist.github.io/gbcalc_source_doc/categories/%E6%8A%80%E8%A1%93%E8%A7%A3%E8%AA%AC">技術解説</a></li>
+						
+						</ul>
+					</li>
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">SourceTreeとGitHubを使いはじめるまで</h1>
+				<div class="doc-entry-meta">
+					<span><time datetime="2016-04-19">April 19, 2016</time></span>
+				</div>
+				<section>
+					
+
+<p>この文書ではGitリポジトリを扱うためのツールの1つであるSourceTreeのインストールの仕方と、GitHubを使い始めるまでの手順を解説します。</p>
+
+<h1 id="sourcetreeのインストール:224e1608373417cdc003004782236e65">SourceTreeのインストール</h1>
+
+<p>まず、SourceTreeをダウンロードしてインストールしましょう。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/sourcetree_download.png" alt="SourceTreeのダウンロード" /></p>
+
+<p>ダウンロードしてインストールすると最終的に次のような画面になると思います。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/sourcetree_install_completed.png" alt="SourceTreeのインストール完了" /></p>
+
+<p>赤い枠で囲ってありますが、私個人としてはSourceTreeを実行する前に入れておきたいソフトウェアがあります。gitをコマンドプロンプトから使う時に便利な<a href="https://github.com/Microsoft/Git-Credential-Manager-for-Windows">Windows Credential Manager</a>です。</p>
+
+<p>まず、Windows Credential Managerのページに行って…。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/git_windows_credential_download_1.png" alt="Windows Credential Managerのページ" /></p>
+
+<p>releaseタブからインストーラをダウンロードして…。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/git_windows_credential_download_2.png" alt="ダウンロードの画面" /></p>
+
+<p>普通にインストールしましょう。これで何も考えなくてもgitが素敵なものになります(具体的にはコマンドプロンプトでパスワードをいちいち入力しなくてもよくなる)。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/git_windows_credential_license.png" alt="インストール時のライセンス同意画面" /></p>
+
+<p>では、いよいよSourceTreeのセットアップです。スタートメニューか何かからSourceTreeを実行すると初回セットアップが始まります。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/sourcetree_initial_1.png" alt="SourceTreeのライセンス同意画面" /></p>
+
+<p>ライセンスを読んで同意したら次はAtlassianアカウントの確認です。BitBucketなどを使っているのならそのアカウントがそのまま使えます。画像では青の矢印がアカウントを持っているときに使用するボタンです。出てきた画面で登録したときのメールアドレスとパスワードを入力しましょう。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/sourcetree_initial_2.png" alt="SourceTreeでのAtlassianアカウント入力" /></p>
+
+<p>次はBitBucketやGitHubのアカウント登録です。ここでは何も登録せずにスキップしています。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/sourcetree_initial_3.png" alt="SourceTreeでのリポジトリサービスの入力" /></p>
+
+<p>SSHキーの読みこみをするかどうか聞かれるかもしれません。GitHubでは <strong>SSHキーの使用は非推奨</strong> なのでここでは登録しません。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/sourcetree_initial_4.png" alt="SourceTreeでのSSHキーの読み込み" /></p>
+
+<p>最後にMercurialとGitのインストールです。インストールする場合は内蔵版をインストールすることができます。これとは別にGit等をダウンロードしてインストールすることもできます。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/sourcetree_initial_5.png" alt="Mercurialのインストール選択" /></p>
+
+<p>ついにSourceTreeが立ちあがりました。これで一段落です。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/sourcetree_top.png" alt="SourceTreeのトップ画面" /></p>
+
+<p>ちなみに内蔵のgitを使うか、それとも別にインストールしたgitを使うかは設定で変更できます。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/sourcetree_option_git_select.png" alt="SourceTreeで使うGitを選択する" /></p>
+
+<h1 id="sourcetreeでbitbucketのアカウントを結びつける:224e1608373417cdc003004782236e65">SourceTreeでBitbucketのアカウントを結びつける</h1>
+
+<p>では(Bitbucketのアカウントを持っていると仮定して)Bitbucketのアカウントを結びつけてみましょう。</p>
+
+<p>まず、SourceTreeのトップ画面から <em>新規/クローンを作成する</em> を選択します。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/sourcetree_clone_top.png" alt="クローンの作成を選択" /></p>
+
+<p>出た画面でリポジトリのURLを選択して直接手元にリポジトリをクローン(コピー)することも出来ますが、ここでは地球アイコンをクリックします。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/sourcetree_clone_select.png" alt="クローンURLの指定画面" /></p>
+
+<p>そうすると、結びつけられたアカウントでクローンできるリポジトリの一覧が表示されるのですが、まだアカウントを結びつけていないので何も表示されません。ここではアカウントを結びつけるために右上のボタンをクリックします。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/sourcetree_clone_repository.png" alt="ホストされているリポジトリの一覧画面" /></p>
+
+<p>そうするとアカウントを指定する画面が表示されるので、Bitbucketを指定してユーザー名を入力します。そして次の画面でbitbucketのパスワードを入力すれば結びつけは完了です。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/sourcetree_clone_account.png" alt="ホスティングアカウントの指定" /></p>
+
+<h1 id="githubアカウントの初期設定-二要素認証:224e1608373417cdc003004782236e65">GitHubアカウントの初期設定(二要素認証)</h1>
+
+<p>この節ではアカウントを作成した後に、安心してGitHubを使用するための初期設定を解説します。</p>
+
+<p>まず、なんとか頑張ってGitHubのアカウントを作成しましょう。おそらくメールでの認証も必要となります。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/github_create_account.png" alt="GitHubアカウントの作成" /></p>
+
+<p>さて、適当に頑張るとこんな感じの画面になります(画像は私のアカウントのトップ画面です)。右上のマークからsettingsを選択しましょう。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/github_top.png" alt="GitHubのトップ画面" /></p>
+
+<p>GitHubでは二要素認証、つまりパスワードの他にワンタイムパスワードを用いた認証が推奨されています。この設定を行います。</p>
+
+<p>左側のメニューからSecurityを選択し、Two-factor authenticationをクリックしましょう。ここからの手順は<a href="https://www.hde.co.jp/otp/ja/github.html">他のページにも書いてあります</a>が一応解説します。</p>
+
+<p>おそらく、次のような画面が表示されるはずです。この画面で <em>Set up using an app</em> をクリックすると、<a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=ja">Google認証システム</a>を使うためのQRコードが表示されると思います。手元のスマートフォンのGoogle認証システムアプリからアカウントを追加してQRコードを読ませてください。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/github_twofactor_setting.png" alt="二要素認証でアプリを使用する" /></p>
+
+<p>なお、先の画面に書いてありますが、携帯電話のショートメッセージでワンタイムパスワードを受けとることも出来ます。</p>
+
+<p>設定したらリカバリーコードを表示させてどこかに控えておきましょう。これはスマホを無くすなどしてワンタイムパスワードが使えなくなった場合に使用します。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/github_twofactor_recovery_code.png" alt="リカバリーコードの表示画面" /></p>
+
+<h1 id="gitからgithubを扱うためのパスワード生成:224e1608373417cdc003004782236e65">gitからGitHubを扱うためのパスワード生成</h1>
+
+<p>さて二要素認証を有効にすると、gitは通常の方法ではGitHubにプッシュ(コードを送る)することが出来なくなります。それはgitが通常はユーザーIDとパスワードの組みあわせでしか認証しないためです。ですから、gitから使用する専用のパスワードを生成します。</p>
+
+<p>左のメニューからPersonal Access Tokenをクリックしてください。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/github_token_generate.png" alt="PersonalAccessTokenの画面" /></p>
+
+<p>私の画面では既にいくつかパスワードが生成されているのでこうなっています。新しく作成する場合にはGenerate new tokenを選択しましょう。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/github_token_new.png" alt="新規トークンの作成画面" /></p>
+
+<p>するとこのような画面が表示されます。ここでは新しく生成したパスワード(トークン)で何が出来るかを指定します。</p>
+
+<p>上の赤い枠はトークンの説明です。認証には使わないのでわかりやすい名前を付けましょう。下の赤い枠が重要でトークンを何に使うかの設定です。通常はチェックされている3つがあれば十分でしょう。</p>
+
+<p>さて、下の方にあるボタンをクリックすると実際にトークンが生成されます。この画像で赤く染まっている部分がそのトークンです。この画面で一度きりしか表示されないのでクリップボードにコピーするなりなんなりして保存しておきましょう。</p>
+
+<p><img src="https://philmist.github.io/gbcalc_source_doc/img/github_token_complete.png" alt="新規トークンの作成完了" /></p>
+
+<p>ここまでやれば、あとは先の手順で示したようにGitHubのアカウントを結びつければおおよそのことは出来ると思います。お疲れさまでした！</p>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">SourceTreeとGitHubを使いはじめるまで</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+<ul>
+<li><a href="#sourcetreeのインストール:224e1608373417cdc003004782236e65">SourceTreeのインストール</a></li>
+<li><a href="#sourcetreeでbitbucketのアカウントを結びつける:224e1608373417cdc003004782236e65">SourceTreeでBitbucketのアカウントを結びつける</a></li>
+<li><a href="#githubアカウントの初期設定-二要素認証:224e1608373417cdc003004782236e65">GitHubアカウントの初期設定(二要素認証)</a></li>
+<li><a href="#gitからgithubを扱うためのパスワード生成:224e1608373417cdc003004782236e65">gitからGitHubを扱うためのパスワード生成</a></li>
+</ul>
+</nav>
+		</div>
+	</div>
+	<div class="sidebar-module">
+		<h4>Tags</h4>
+		<div class="tag-box">
+		
+		</div>
+	</div>
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	
+	
+	<p>Powered by <strong><a href="https://github.com/key-amb/hugo-theme-bootie-docs">Bootie Docs</a></strong> - theme for <a href="http://gohugo.io/">Hugo</a> by <a href="https://github.com/key-amb/">key-amb</a>.</p>
+</footer>
+
+
+
+<script src="https://philmist.github.io/gbcalc_source_doc/js/jquery-1.11.2.min.js"></script>
+<script src="https://philmist.github.io/gbcalc_source_doc/js/bootstrap.min.js"></script>
+
+<script src="https://philmist.github.io/gbcalc_source_doc/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://philmist.github.io/gbcalc_source_doc/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>
