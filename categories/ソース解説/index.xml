@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ソース解説 on グラブル計算機の読み方</title>
+    <link>https://philmist.github.io/gbcalc_source_doc/categories/%E3%82%BD%E3%83%BC%E3%82%B9%E8%A7%A3%E8%AA%AC/</link>
+    <description>Recent content in ソース解説 on グラブル計算機の読み方</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Wed, 30 Mar 2016 11:48:45 +0900</lastBuildDate>
+    <atom:link href="https://philmist.github.io/gbcalc_source_doc/categories/%E3%82%BD%E3%83%BC%E3%82%B9%E8%A7%A3%E8%AA%AC/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>ビルドで何をしているか</title>
+      <link>https://philmist.github.io/gbcalc_source_doc/build_detail/</link>
+      <pubDate>Wed, 30 Mar 2016 11:48:45 +0900</pubDate>
+      
+      <guid>https://philmist.github.io/gbcalc_source_doc/build_detail/</guid>
+      <description>
+
+&lt;p&gt;この文書では &lt;em&gt;ビルド&lt;/em&gt; で実際はいったい何をしているのかを解説します。&lt;/p&gt;
+
+&lt;h1 id=&#34;コードの分割-commonjsのやり方とes6のやり方:c148923e9003c2cad40a9cc8672acac8&#34;&gt;コードの分割、CommonJSのやり方とES6のやり方&lt;/h1&gt;
+
+&lt;p&gt;コンパイル型の言語、たとえばC++ではコードを分割して書いたのち、
+最終的に &lt;em&gt;コンパイル&lt;/em&gt; と &lt;em&gt;リンク&lt;/em&gt; をしてひとつの生成物にしています。&lt;/p&gt;
+
+&lt;p&gt;Javascriptでも同じことが行なえます。
+そのうちのリンク、つまり複数のものをひとつにまとめるツールを &lt;em&gt;bundler&lt;/em&gt; と呼んでいます。
+bundlerで有名なツールには&lt;code&gt;browserify&lt;/code&gt;と&lt;code&gt;webpack&lt;/code&gt;の2つがあって
+どちらも人気があるようですが、
+私は&lt;code&gt;webpack&lt;/code&gt;の方を選びました。&lt;/p&gt;
+
+&lt;p&gt;ところで&lt;code&gt;webpack&lt;/code&gt;を使って、
+あるコードから別のファイルにあるコードを読みこむときにはいくつかの方法があります。
+そのうち2つを今回のコードでは使っています。&lt;/p&gt;
+
+&lt;p&gt;1つは&lt;code&gt;CommonJS&lt;/code&gt;のやり方です。これは&lt;code&gt;module.exports&lt;/code&gt;と&lt;code&gt;require&lt;/code&gt;を使います。
+&lt;code&gt;module.exports&lt;/code&gt;に外へ出したいもの(変数とかオブジェクトとか)を代入すると、
+&lt;code&gt;require&lt;/code&gt;を使って出されたものを参照できます。
+例を示します。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// hello.js
+var Hello = &amp;quot;Hello!&amp;quot;;
+module.exports = Hello;
+
+// world.js
+var Hello = require(&amp;quot;./hello&amp;quot;);
+console.log(Hello + &amp;quot;World!&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;もう1つは&lt;code&gt;ES6&lt;/code&gt;(&lt;code&gt;ES2015&lt;/code&gt;)のやり方です。
+&lt;code&gt;ES6&lt;/code&gt;という名称は&lt;code&gt;ECMAScript&lt;/code&gt;の第6版ということから来ています。
+これは&lt;code&gt;import&lt;/code&gt;と&lt;code&gt;export&lt;/code&gt;を使います。&lt;/p&gt;
+
+&lt;p&gt;まず、単純な例から。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// hello.js
+export var Hello = &amp;quot;Hello!&amp;quot;;
+
+// world.js
+import { Hello } from &amp;quot;./hello&amp;quot;;
+console.log(Hello + &amp;quot;World!&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;ちょっと難しい例。
+&lt;a href=&#34;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/import&#34;&gt;MDNのimport&lt;/a&gt;
+を見ながらどうぞ。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// hello.js
+export var Hello = &amp;quot;Hello!&amp;quot;;
+
+// world.js
+export default function print_world(s) {
+  console.log(s + &amp;quot;World!&amp;quot;);
+}
+
+// print.js
+import * as H from &amp;quot;./hello&amp;quot;;
+import world from &amp;quot;./world&amp;quot;;
+
+world(H.Hello);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;jsx-es6-7-そしてbabel:c148923e9003c2cad40a9cc8672acac8&#34;&gt;JSX、ES6/7、そしてBabel&lt;/h1&gt;
+
+&lt;p&gt;リンクに相当する&lt;code&gt;bundler&lt;/code&gt;については説明しました。
+今度はコンパイルについて説明します。&lt;/p&gt;
+
+&lt;p&gt;今回使用しているreactというライブラリでは&lt;code&gt;JSX&lt;/code&gt;という文法が推奨されています。
+これは次のようにXMLっぽい構文をJavascriptに紛れこませられるものです。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class PlayerStats extends Component {
+  render() {
+    return (
+      &amp;lt;table className=&amp;quot;grbr&amp;quot; id=&amp;quot;info_table&amp;quot;&amp;gt;
+        &amp;lt;tbody&amp;gt;
+          &amp;lt;Rank /&amp;gt;
+          &amp;lt;ShipBonus /&amp;gt;
+          &amp;lt;AttributeBonus /&amp;gt;
+          &amp;lt;HPPercent /&amp;gt;
+        &amp;lt;/tbody&amp;gt;
+      &amp;lt;/table&amp;gt;
+    );
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;もちろん、こんな構文をブラウザが理解できるわけがありません。
+そこで必要なのが &lt;em&gt;コンパイラ&lt;/em&gt; です。
+コンパイラはこのような構文をブラウザが解釈できる構文に変換します。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Babel&lt;/code&gt;というコンパイラは、
+まだブラウザで実装されていないけれど最新の仕様では実装されている(&lt;code&gt;ES6&lt;/code&gt;とか&lt;code&gt;ES7&lt;/code&gt;)、
+というような構文を対象のブラウザが解釈できる構文に変換することも出来ます。
+&lt;code&gt;Babel&lt;/code&gt;は&lt;code&gt;webpack&lt;/code&gt;から呼びだして実行することが可能なので、私はそうしています。&lt;/p&gt;
+
+&lt;h1 id=&#34;結局webpackは何をしているか:c148923e9003c2cad40a9cc8672acac8&#34;&gt;結局webpackは何をしているか&lt;/h1&gt;
+
+&lt;p&gt;&lt;code&gt;webpack&lt;/code&gt;それ自体はリンクとコンパイルをしています。つまり次のようなことをしています。&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;エントリポイントとして指定されたJavascriptファイルを探す&lt;/li&gt;
+&lt;li&gt;指定されたファイルから呼びだされているファイルを順々に探す&lt;/li&gt;
+&lt;li&gt;Javascriptファイルを&lt;code&gt;Babel&lt;/code&gt;(正確には&lt;code&gt;babel-loader&lt;/code&gt;)に渡してコンパイルする&lt;/li&gt;
+&lt;li&gt;全てのファイルを1つにまとめる&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;こうすることで、好きな構文を使って色々なブラウザで動くJavascriptを簡単に書けるわけです。&lt;/p&gt;
+
+&lt;p&gt;なお、&lt;code&gt;webpack&lt;/code&gt;の設定ファイルは&lt;code&gt;webpack.config.js&lt;/code&gt;になります。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>ファイル構成</title>
+      <link>https://philmist.github.io/gbcalc_source_doc/file_constructure/</link>
+      <pubDate>Tue, 29 Mar 2016 19:45:25 +0900</pubDate>
+      
+      <guid>https://philmist.github.io/gbcalc_source_doc/file_constructure/</guid>
+      <description>
+
+&lt;p&gt;この文書では含まれているディレクトリやファイルがどういった意味合いなのかを解説します。&lt;/p&gt;
+
+&lt;h1 id=&#34;ウェブサイトにアップロードする際に必要なファイルとディレクトリ:2fdc350de12ba0070e8c2120c91db670&#34;&gt;ウェブサイトにアップロードする際に必要なファイルとディレクトリ&lt;/h1&gt;
+
+&lt;p&gt;先にアップロードして閲覧するのに必要なファイルとディレクトリだけを書いておきます。
+プロジェクトルートに対するディレクトリの構造は維持してください。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;dist/bundle.js&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;calc.html&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;設定ファイル:2fdc350de12ba0070e8c2120c91db670&#34;&gt;設定ファイル&lt;/h1&gt;
+
+&lt;p&gt;コードを書くのに使ったりする設定ファイルは以下のものです。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;.gitignore&lt;/code&gt; (バージョン管理でどのファイルを無視するか設定する)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;package.json&lt;/code&gt; (&lt;code&gt;npm&lt;/code&gt;でどんなパッケージをインストールするか設定する)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;webpack.config.js&lt;/code&gt; (&lt;code&gt;webpack&lt;/code&gt;に何をさせるかを設定する)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;自動的に生成されるファイルとディレクトリ:2fdc350de12ba0070e8c2120c91db670&#34;&gt;自動的に生成されるファイルとディレクトリ&lt;/h1&gt;
+
+&lt;p&gt;このアプリ(プロジェクト)は全体を通して &lt;em&gt;webpack&lt;/em&gt; と &lt;em&gt;npm&lt;/em&gt; に強く依存しています。
+その結果、いくつかのディレクトリとファイルが自動的に生成されて参照されます。&lt;/p&gt;
+
+&lt;h2 id=&#34;node-modules:2fdc350de12ba0070e8c2120c91db670&#34;&gt;node_modules&lt;/h2&gt;
+
+&lt;p&gt;このディレクトリはnpmがモジュール(ライブラリ)をインストールする際に使用するディレクトリです。&lt;/p&gt;
+
+&lt;p&gt;webpackもこのディレクトリからモジュールを参照するので、
+開発中は不必要にディレクトリを消すのは避けてください。&lt;/p&gt;
+
+&lt;p&gt;ただし、実際にウェブサイトとしてアップロードする際にはこのディレクトリは不要です。
+ライブラリは後述するdistディレクトリに生成されるファイルに全て含まれます。&lt;/p&gt;
+
+&lt;h2 id=&#34;dist:2fdc350de12ba0070e8c2120c91db670&#34;&gt;dist&lt;/h2&gt;
+
+&lt;p&gt;このディレクトリにwebpackは次のファイルを生成します。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;bundle.js&lt;/li&gt;
+&lt;li&gt;test_bundle.js&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;bundle.js&lt;/code&gt;の方は&lt;code&gt;calc.html&lt;/code&gt;で使われるJavascriptの本体です。
+このファイルには使用しているライブラリが &lt;strong&gt;全て&lt;/strong&gt; 含まれているので、
+かなり大きいサイズになっているはずです。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;test_bundle.js&lt;/code&gt;の方は&lt;code&gt;test.html&lt;/code&gt;で使われるJavascriptファイルです。
+このファイルも使用しているライブラリがいくつか含まれますが、
+依存関係が(今のところ)小さいのでそこまで大きくないはずです。&lt;/p&gt;
+
+&lt;h1 id=&#34;スタイルシート-css:2fdc350de12ba0070e8c2120c91db670&#34;&gt;スタイルシート(&lt;code&gt;css/&lt;/code&gt;)&lt;/h1&gt;
+
+&lt;p&gt;スタイルは各モジュールごとに分けられていることに注意してください。&lt;/p&gt;
+
+&lt;h2 id=&#34;global-css:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;global.css&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;サイト全体に適用されるスタイルです。&lt;/p&gt;
+
+&lt;h2 id=&#34;app-css:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;app.css&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;アプリ全体で使用するスタイルです。
+ここから各ファイルでスタイルを継承して使っています。&lt;/p&gt;
+
+&lt;h2 id=&#34;tables-css:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;tables.css&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;アプリ全体で使うなかで一番多いテーブルのスタイルを定義したファイルです。
+これも各ファイルで継承されて使われています。&lt;/p&gt;
+
+&lt;h2 id=&#34;その他の-css:2fdc350de12ba0070e8c2120c91db670&#34;&gt;その他の&lt;code&gt;*.css&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;これらのファイルは以下で説明する各JSXファイルと関連づけられています。
+1つのJSXに1つのCSSファイルと思ってください。&lt;/p&gt;
+
+&lt;h1 id=&#34;js-jsxファイル-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;JS/JSXファイル(&lt;code&gt;js/&lt;/code&gt;)&lt;/h1&gt;
+
+&lt;p&gt;これらに全て説明をつけるにはプログラム全体の説明をしなければなりませんので、
+ここでは概要にとどめます。&lt;/p&gt;
+
+&lt;h2 id=&#34;entry-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;entry.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;エントリポイント(C/C++のmain関数相当)です。
+ここでreduxのstoreを設定し、htmlと繋ぎあわせます。&lt;/p&gt;
+
+&lt;h2 id=&#34;atk-calc-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;atk_calc.js&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;与えられたパラメータオブジェクトとジョブデータから
+最終的な攻撃力を計算するための関数が入っています。
+エラー処理はほとんどしていないのでそのあたりは呼びだし側に任されています。&lt;/p&gt;
+
+&lt;h2 id=&#34;get-job-data-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;get_job_data.js&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;指定されたURLからJSONデータを読みこみPromiseオブジェクトとして返す関数が入っています。
+デフォルトの読みこみURLはプロジェクトルート直下のdataディレクトリ内&lt;code&gt;job_data.json&lt;/code&gt;です。&lt;/p&gt;
+
+&lt;h2 id=&#34;reducers-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;reducers.js&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;ファイルの先頭にもざっくり説明がありますが、
+reduxというライブラリを使ってstoreという変数に状態(state)を保存する際に、
+どういうactionオブジェクトが渡されたらstoreにどう保存するかを書いたモジュールです。&lt;/p&gt;
+
+&lt;h2 id=&#34;actions-js:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;actions.js&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;reactのコンポーネントと&lt;code&gt;reducers.js&lt;/code&gt;のreducer関数を繋げるための関数群です。
+redux-thunkというライブラリを使っているので、
+通常のreduxとは若干違う書き方になっています。&lt;/p&gt;
+
+&lt;h2 id=&#34;calculator-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;calculator.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;計算機全体のデザインと、結果表示などの小さなコンポーネントを集めたモジュールです。
+&lt;code&gt;entry.jsx&lt;/code&gt;で直接使われているモジュールです。
+他のコンポーネントの多くがここから呼びだされて使われています。
+計算結果を作るためstateの整形をして関数に渡しているのもこのモジュールです。
+また、アプリ全体でドラッグ&amp;amp;ドロップを使うためにこのモジュールで準備をしています。&lt;/p&gt;
+
+&lt;h2 id=&#34;basic-information-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;basic_information.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;基本情報(ランクや攻撃力ボーナス等)を入力させるコンポーネントが入っているモジュールです。
+ジョブを選択するため、reduxのstoreを通してジョブ情報を読んでいます。&lt;/p&gt;
+
+&lt;h2 id=&#34;zenith-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;zenith.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;ゼニスパークを入力させるコンポーネントが入ったモジュールです。&lt;/p&gt;
+
+&lt;h2 id=&#34;weapon-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;weapon.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;武器構成を入力させるモジュールです。
+ドラッグ&amp;amp;ドロップと項目の追加削除などの表示部分も担当しています。
+実際にデータを動かしているのは&lt;code&gt;action.js&lt;/code&gt;と&lt;code&gt;reducers.js&lt;/code&gt;です。&lt;/p&gt;
+
+&lt;h2 id=&#34;summon-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;summon.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;召喚構成を入力させるモジュールです。
+こちらも&lt;code&gt;weapon.jsx&lt;/code&gt;と似たような処理をしています。&lt;/p&gt;
+
+&lt;h2 id=&#34;friend-jsx:2fdc350de12ba0070e8c2120c91db670&#34;&gt;&lt;code&gt;friend.jsx&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;フレンド召喚を選ぶコンポーネントが入ったモジュールです。
+&lt;code&gt;summon.jsx&lt;/code&gt;を内部で参照しています。&lt;/p&gt;
+
+&lt;h1 id=&#34;定数-js-const:2fdc350de12ba0070e8c2120c91db670&#34;&gt;定数(&lt;code&gt;js/const/&lt;/code&gt;)&lt;/h1&gt;
+
+&lt;p&gt;この中にあるファイルはJS/JSXファイルで定数として使われています。&lt;/p&gt;
+
+&lt;h1 id=&#34;終わりに:2fdc350de12ba0070e8c2120c91db670&#34;&gt;終わりに&lt;/h1&gt;
+
+&lt;p&gt;コードの量自体は多く見えますが、データの流れはそこまで難しくはありません。&lt;/p&gt;
+
+&lt;p&gt;ほとんど全てのデータはreduxのstoreに保存され、
+データが更新されると関連したモジュールが更新される、と覚えておけば
+ひとまずは十分だと思います。&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
