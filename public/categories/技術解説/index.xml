@@ -6,8 +6,108 @@
     <description>Recent content in 技術解説 on グラブル計算機の読み方</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Tue, 19 Apr 2016 16:37:28 +0900</lastBuildDate>
+    <lastBuildDate>Tue, 31 May 2016 19:30:27 +0900</lastBuildDate>
     <atom:link href="https://philmist.github.io/gbcalc_source_doc/categories/%E6%8A%80%E8%A1%93%E8%A7%A3%E8%AA%AC/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>CSS Modulesとは何か</title>
+      <link>https://philmist.github.io/gbcalc_source_doc/css_modules/</link>
+      <pubDate>Tue, 31 May 2016 19:30:27 +0900</pubDate>
+      
+      <guid>https://philmist.github.io/gbcalc_source_doc/css_modules/</guid>
+      <description>
+
+&lt;p&gt;この文書ではスタイルを指定するのに使用している&lt;code&gt;CSS Modules&lt;/code&gt;という技術について解説します。&lt;/p&gt;
+
+&lt;h1 id=&#34;通常のcssの問題点:aedf7103cc010e0a11d17800e6fd13b0&#34;&gt;通常のCSSの問題点&lt;/h1&gt;
+
+&lt;p&gt;通常のCSSでは全てのスタイルがグローバルに定義されており基本的にはスコープという概念がありません。そのために、ほとんど全てのスタイルはカスケーディングされ(継承され)てしまい、名前をユニークにすることでしか区別できません。&lt;/p&gt;
+
+&lt;p&gt;この場合、部品(コンポーネント)ごとにスタイルを分離して定義したい時に名前が重複しないかをいちいち確かめる必要があり不便になることがあります。idをいちいちユニークにするのは結構な手間です。&lt;/p&gt;
+
+&lt;p&gt;それを解決するのがCSS Modulesです。&lt;/p&gt;
+
+&lt;h1 id=&#34;css-modulesの考えかた:aedf7103cc010e0a11d17800e6fd13b0&#34;&gt;CSS Modulesの考えかた&lt;/h1&gt;
+
+&lt;p&gt;CSS Modulesでは全てのスタイルがローカルなものとして定義されます。つまり名前の重複を気にする必要がありません。したがって部品ごとにスタイルを分離することが可能になります。逆に他の場所で使われているスタイルを使いたい時には明示的に引用しなければなりません。&lt;/p&gt;
+
+&lt;p&gt;実際にCSS Modulesで書かれたコードを見てみましょう。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/* tables.css */
+.base {
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    border-collapse: separate;
+    border-spacing: 2px;
+    font-size: 100%;
+}
+
+.cell_base {
+    composes: base;
+    padding: 3px 1px;
+}
+
+.header {
+    composes: cell_base;
+    border-bottom: solid 1px #B2B2B2;
+    border-right: solid 1px #B2B2B2;
+    background: #4D8CC9;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 92%;
+    text-align: center;
+}
+
+
+/* summon.css */
+.header {
+    composes: header from &amp;quot;./tables.css&amp;quot;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;これが基本的なCSS Modulesのコードです。&lt;code&gt;composes&lt;/code&gt;は他のファイルないし他のクラスから要素を引用することを示しています。Reactで指定して(正確には&lt;a href=&#34;https://github.com/gajus/react-css-modules&#34;&gt;react-css-modules&lt;/a&gt;を経由して)使う場合には次のようにします。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;import CSSModules from &amp;quot;react-css-modules&amp;quot;;
+import styles from &amp;quot;summon.css&amp;quot;;
+
+// 中略
+
+class SummonTableHeader extends Component {
+  render() {
+    return (
+      &amp;lt;tr styleName=&amp;quot;header&amp;quot;&amp;gt;
+        &amp;lt;th&amp;gt;順&amp;lt;/th&amp;gt;
+        &amp;lt;th&amp;gt;選&amp;lt;/th&amp;gt;
+        &amp;lt;th&amp;gt;鍵&amp;lt;/th&amp;gt;
+        &amp;lt;th&amp;gt;召喚名&amp;lt;/th&amp;gt;
+        &amp;lt;th&amp;gt;攻撃力&amp;lt;/th&amp;gt;
+        &amp;lt;th colSpan=&amp;quot;2&amp;quot;&amp;gt;加護1&amp;lt;/th&amp;gt;
+        &amp;lt;th colSpan=&amp;quot;2&amp;quot;&amp;gt;加護2&amp;lt;/th&amp;gt;
+        &amp;lt;th&amp;gt;追加・削除&amp;lt;/th&amp;gt;
+      &amp;lt;/tr&amp;gt;
+    );
+  }
+}
+SummonTableHeader = CSSModules(SummonTableHeader, styles);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;こうするとあとはwebpackがよろしくやってくれます。&lt;/p&gt;
+
+&lt;h1 id=&#34;どうしてもグローバルにしたい時:aedf7103cc010e0a11d17800e6fd13b0&#34;&gt;どうしてもグローバルにしたい時&lt;/h1&gt;
+
+&lt;p&gt;どうしてもCSSのクラス等をグローバルに使いたい時もたまに存在します。そういう時は単純にアプリの大元のJavascriptファイルで何も指定せずに&lt;code&gt;import&lt;/code&gt;すれば良いです。具体的には次のようにします。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/* entry.jsx */
+// 必要なスタイルシートを読みこむ
+import &amp;quot;normalize.css/normalize.css&amp;quot;;
+import &amp;quot;balloon-css/balloon.css&amp;quot;;
+import &amp;quot;../css/mplus_webfonts.css&amp;quot;;
+import &amp;quot;../css/global.css&amp;quot;;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;これだけです。それぞれのファイルがどういう意味合いなのかは別の文書にゆずります。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>SourceTreeとGitHubを使いはじめるまで</title>

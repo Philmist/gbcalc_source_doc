@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="https://philmist.github.io/gbcalc_source_doc/index.xml" type="application/rss+xml" title="グラブル計算機の読み方">
+		<link rel="icon" href="https://philmist.github.io/gbcalc_source_doc/favicon.ico">
+		<title>CSS Modulesとは何か - グラブル計算機の読み方</title>
+		
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/highlight.js.min.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/theme.css">
+		<link rel="stylesheet" href="https://philmist.github.io/gbcalc_source_doc/css/bootie-docs.css">
+	</head>
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="https://philmist.github.io/gbcalc_source_doc/">グラブル計算機の読み方</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="https://philmist.github.io/gbcalc_source_doc/">Home</a></li>
+			
+				
+				
+					
+					<li ><a href="https://philmist.github.io/gbcalc_source_doc/howtobuild">Howtobuild</a></li>
+				
+			
+				
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Categories<span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+						
+							<li><a href="https://philmist.github.io/gbcalc_source_doc/categories/%E3%82%BD%E3%83%BC%E3%82%B9%E8%A7%A3%E8%AA%AC">ソース解説</a></li>
+						
+							<li><a href="https://philmist.github.io/gbcalc_source_doc/categories/%E3%83%93%E3%83%AB%E3%83%89">ビルド</a></li>
+						
+							<li><a href="https://philmist.github.io/gbcalc_source_doc/categories/%E6%8A%80%E8%A1%93%E8%A7%A3%E8%AA%AC">技術解説</a></li>
+						
+						</ul>
+					</li>
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">CSS Modulesとは何か</h1>
+				<div class="doc-entry-meta">
+					<span><time datetime="2016-05-31">May 31, 2016</time></span>
+				</div>
+				<section>
+					
+
+<p>この文書ではスタイルを指定するのに使用している<code>CSS Modules</code>という技術について解説します。</p>
+
+<h1 id="通常のcssの問題点:aedf7103cc010e0a11d17800e6fd13b0">通常のCSSの問題点</h1>
+
+<p>通常のCSSでは全てのスタイルがグローバルに定義されており基本的にはスコープという概念がありません。そのために、ほとんど全てのスタイルはカスケーディングされ(継承され)てしまい、名前をユニークにすることでしか区別できません。</p>
+
+<p>この場合、部品(コンポーネント)ごとにスタイルを分離して定義したい時に名前が重複しないかをいちいち確かめる必要があり不便になることがあります。idをいちいちユニークにするのは結構な手間です。</p>
+
+<p>それを解決するのがCSS Modulesです。</p>
+
+<h1 id="css-modulesの考えかた:aedf7103cc010e0a11d17800e6fd13b0">CSS Modulesの考えかた</h1>
+
+<p>CSS Modulesでは全てのスタイルがローカルなものとして定義されます。つまり名前の重複を気にする必要がありません。したがって部品ごとにスタイルを分離することが可能になります。逆に他の場所で使われているスタイルを使いたい時には明示的に引用しなければなりません。</p>
+
+<p>実際にCSS Modulesで書かれたコードを見てみましょう。</p>
+
+<pre><code>/* tables.css */
+.base {
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    border-collapse: separate;
+    border-spacing: 2px;
+    font-size: 100%;
+}
+
+.cell_base {
+    composes: base;
+    padding: 3px 1px;
+}
+
+.header {
+    composes: cell_base;
+    border-bottom: solid 1px #B2B2B2;
+    border-right: solid 1px #B2B2B2;
+    background: #4D8CC9;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 92%;
+    text-align: center;
+}
+
+
+/* summon.css */
+.header {
+    composes: header from &quot;./tables.css&quot;;
+}
+</code></pre>
+
+<p>これが基本的なCSS Modulesのコードです。<code>composes</code>は他のファイルないし他のクラスから要素を引用することを示しています。Reactで指定して(正確には<a href="https://github.com/gajus/react-css-modules">react-css-modules</a>を経由して)使う場合には次のようにします。</p>
+
+<pre><code>import CSSModules from &quot;react-css-modules&quot;;
+import styles from &quot;summon.css&quot;;
+
+// 中略
+
+class SummonTableHeader extends Component {
+  render() {
+    return (
+      &lt;tr styleName=&quot;header&quot;&gt;
+        &lt;th&gt;順&lt;/th&gt;
+        &lt;th&gt;選&lt;/th&gt;
+        &lt;th&gt;鍵&lt;/th&gt;
+        &lt;th&gt;召喚名&lt;/th&gt;
+        &lt;th&gt;攻撃力&lt;/th&gt;
+        &lt;th colSpan=&quot;2&quot;&gt;加護1&lt;/th&gt;
+        &lt;th colSpan=&quot;2&quot;&gt;加護2&lt;/th&gt;
+        &lt;th&gt;追加・削除&lt;/th&gt;
+      &lt;/tr&gt;
+    );
+  }
+}
+SummonTableHeader = CSSModules(SummonTableHeader, styles);
+</code></pre>
+
+<p>こうするとあとはwebpackがよろしくやってくれます。</p>
+
+<h1 id="どうしてもグローバルにしたい時:aedf7103cc010e0a11d17800e6fd13b0">どうしてもグローバルにしたい時</h1>
+
+<p>どうしてもCSSのクラス等をグローバルに使いたい時もたまに存在します。そういう時は単純にアプリの大元のJavascriptファイルで何も指定せずに<code>import</code>すれば良いです。具体的には次のようにします。</p>
+
+<pre><code>/* entry.jsx */
+// 必要なスタイルシートを読みこむ
+import &quot;normalize.css/normalize.css&quot;;
+import &quot;balloon-css/balloon.css&quot;;
+import &quot;../css/mplus_webfonts.css&quot;;
+import &quot;../css/global.css&quot;;
+</code></pre>
+
+<p>これだけです。それぞれのファイルがどういう意味合いなのかは別の文書にゆずります。</p>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">CSS Modulesとは何か</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+<ul>
+<li><a href="#通常のcssの問題点:aedf7103cc010e0a11d17800e6fd13b0">通常のCSSの問題点</a></li>
+<li><a href="#css-modulesの考えかた:aedf7103cc010e0a11d17800e6fd13b0">CSS Modulesの考えかた</a></li>
+<li><a href="#どうしてもグローバルにしたい時:aedf7103cc010e0a11d17800e6fd13b0">どうしてもグローバルにしたい時</a></li>
+</ul>
+</nav>
+		</div>
+	</div>
+	<div class="sidebar-module">
+		<h4>Tags</h4>
+		<div class="tag-box">
+		
+		</div>
+	</div>
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	
+	
+	<p>Powered by <strong><a href="https://github.com/key-amb/hugo-theme-bootie-docs">Bootie Docs</a></strong> - theme for <a href="http://gohugo.io/">Hugo</a> by <a href="https://github.com/key-amb/">key-amb</a>.</p>
+</footer>
+
+
+
+<script src="https://philmist.github.io/gbcalc_source_doc/js/jquery-1.11.2.min.js"></script>
+<script src="https://philmist.github.io/gbcalc_source_doc/js/bootstrap.min.js"></script>
+
+<script src="https://philmist.github.io/gbcalc_source_doc/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://philmist.github.io/gbcalc_source_doc/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>
